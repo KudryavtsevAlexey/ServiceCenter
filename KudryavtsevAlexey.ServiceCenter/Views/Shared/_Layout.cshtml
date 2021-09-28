@@ -1,0 +1,48 @@
+﻿<DOCTYPE html>
+	<html>
+	<head>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<link href="~/twitter-bootstrap/css/bootstrap.css" rel="stylesheet"/>
+		<link href="~/css/site.css" rel="stylesheet"/>
+		<link href="~/css/HomeIndex.css" rel="stylesheet"/>
+		<title>Service center</title>
+	</head>
+
+	<body>
+		<div class="wrapper">
+			<div class="content">
+				<header>
+					<nav class="navbar navbar-expand-sm navbar-collapse navbar-dark bg-dark justify-content-center">
+						<div class="container-fluid">
+							<div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+								<ul class="navbar-nav">
+									<li class="nav-item">
+										<a asp-controller="Home" asp-action="Index">Service center</a>
+									</li>
+									<li class="nav-item">
+										<a asp-controller="Home" asp-action="Index">Service center</a>
+									</li>
+									<li class="nav-item">
+										<a asp-controller="Home" asp-action="Index">Service center</a>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</nav>
+				</header>
+				<div>
+					@RenderBody()
+				</div>
+			</div>
+			<div class="footer text-center">
+				<span>
+					<b>Компания RSS открыта для обсуждения новых проектов и вариантов расширения сотрудничества с ведущими мировыми производителями компьютерной и офисной техники</b>
+				</span>
+				<footer>&copy; Service center</footer>
+			</div>
+		</div>
+	</body>
+
+	</html>
+</DOCTYPE>
