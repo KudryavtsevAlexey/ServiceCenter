@@ -26,29 +26,28 @@ namespace KudryavtsevAlexey.ServiceCenter.Controllers
 		[HttpPost]
 		public async Task<IActionResult> Login(LoginViewModel lvm)
 		{
-			if (ModelState.IsValid)
+			if (!ModelState.IsValid)
 			{
-				if (lvm == null)
-				{
-					return NotFound();
-				}
-
-				var user = await _userManager.FindByEmailAsync(lvm.Email);
-				if (user == null)
-				{
-					ModelState.AddModelError("", "User was not found");
-					return View(lvm);
-				}
-				var result = await _signInManager.PasswordSignInAsync(user, lvm.Password, true, false);
-
-				if (!result.Succeeded)
-				{
-					ModelState.AddModelError("", "Failed login attempt");
-					return View(lvm);
-				}
-				return RedirectToAction("Index", "Home");
+				return View(lvm);
 			}
-			return View(lvm);
+
+			var user = await _userManager.FindByEmailAsync(lvm.Email);
+
+			if (user == null)
+			{
+				ModelState.AddModelError("", "User was not found");
+				return View(lvm);
+			}
+
+			var result = await _signInManager.PasswordSignInAsync(user, lvm.Password, true, false);
+
+			if (!result.Succeeded)
+			{
+				ModelState.AddModelError("", "Failed login attempt");
+				return View(lvm);
+			}
+
+			return RedirectToAction("Index", "Home");
 		}
 
 		public IActionResult Register()
@@ -59,39 +58,39 @@ namespace KudryavtsevAlexey.ServiceCenter.Controllers
 		[HttpPost]
 		public async Task<IActionResult> Register(RegisterViewModel rvm)
 		{
-			if (ModelState.IsValid)
+			if (!ModelState.IsValid)
 			{
-				if (rvm == null)
-				{
-					return NotFound();
-				}
-
-				var user = new ApplicationUser {
-					UserName = rvm.FirstName + rvm.LastName,
-					FirstName = rvm.FirstName,
-					LastName = rvm.LastName,
-					Email = rvm.Email,
-				};
-
-				var identityResult = await _userManager.CreateAsync(user, rvm.Password);
-
-				if (identityResult.Succeeded)
-				{
-					await _userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "Client"));
-					var signInResult = await _signInManager.PasswordSignInAsync(user, rvm.Password, true, false);
-
-					if (signInResult.Succeeded)
-					{
-						return RedirectToAction("Index", "Home");
-					}
-				}
-
-				return View();
+				return View(rvm);
 			}
-			return View(rvm);
+
+			var user = new ApplicationUser {
+				UserName = rvm.FirstName + rvm.LastName,
+				FirstName = rvm.FirstName,
+				LastName = rvm.LastName,
+				Email = rvm.Email,
+			};
+
+			var identityResult = await _userManager.CreateAsync(user, rvm.Password);
+
+			if (!identityResult.Succeeded)
+			{
+				foreach (var error in identityResult.Errors)
+				{
+					ModelState.AddModelError("", error.Description);
+				}
+			}
+
+			await _userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "Client"));
+			var signInResult = await _signInManager.PasswordSignInAsync(user, rvm.Password, true, false);
+
+			if (!signInResult.Succeeded)
+			{
+				return View(rvm);
+			}
+			return RedirectToAction("Index", "Home");
 		}
 
-		public async Task<IActionResult> LogoutAsync()
+		public async Task<IActionResult> Logout()
 		{
 			await _signInManager.SignOutAsync();
 			return RedirectToAction("Index", "Home");

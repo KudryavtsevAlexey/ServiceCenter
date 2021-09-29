@@ -4,15 +4,20 @@ namespace KudryavtsevAlexey.ServiceCenter.ViewModels
 {
 	public class RegisterViewModel
 	{
-		[Required, Display(Name ="First name")]
+		[Required(ErrorMessage ="First name field is required"), Display(Name ="First name")]
 		public string FirstName { get; set; }
-		[Required, Display(Name ="Last name")]
+
+		[Required(ErrorMessage = "Last name field is required"), Display(Name ="Last name")]
 		public string LastName { get; set; }
-		[Required,EmailAddress]
+
+		[Required,EmailAddress(ErrorMessage ="Please, enter the valid value")]
 		public string Email { get; set; }
-		[Required, DataType(DataType.Password)]
+
+		[Required(ErrorMessage ="Password field is required"), DataType(DataType.Password)]
 		public string Password { get; set; }
-		[Required, DataType(DataType.Password), Compare("Password"), Display(Name ="Confirmed password")]
+
+		[Required(ErrorMessage = "Confirmed password field is required"), DataType(DataType.Password),
+			Compare("Password"), Display(Name ="Confirmed password")]
 		public string ConfirmedPassword { get; set; }
 	}
 }
