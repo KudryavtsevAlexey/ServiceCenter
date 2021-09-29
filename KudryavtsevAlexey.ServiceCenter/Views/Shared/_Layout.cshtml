@@ -6,6 +6,8 @@
 		<link href="~/twitter-bootstrap/css/bootstrap.css" rel="stylesheet"/>
 		<link href="~/css/site.css" rel="stylesheet"/>
 		<link href="~/css/HomeIndex.css" rel="stylesheet"/>
+		<link href="~/css/HomeLogin.css" rel="stylesheet"/>
+		<link href="~/css/Register.css" rel="stylesheet"/>
 		<title>Service center</title>
 	</head>
 
@@ -27,6 +29,25 @@
 										<a asp-controller="Home" asp-action="Index">Service center</a>
 									</li>
 								</ul>
+								@if(!User.Identity.IsAuthenticated)
+								{
+									<div class="justify-content-end">
+										<a class="btn btn-primary nav__button" asp-controller="Account" asp-action="Login">
+										<span>Sign in</span>
+									</a>
+									<a class="btn btn-outline-primary" asp-controller="Account" asp-action="Register">
+										<span>Sign up</span>
+									</a>
+									</div>
+								} 
+								else 
+								{
+									<div class="justify-content-end">
+										<a class="btn btn-outline-danger" asp-controller="Account" asp-action="Logout">
+											<span>Logout</span>
+										</a>
+									</div>
+								}
 							</div>
 						</div>
 					</nav>
@@ -37,7 +58,7 @@
 			</div>
 			<div class="footer text-center">
 				<span>
-					<b>Компания RSS открыта для обсуждения новых проектов и вариантов расширения сотрудничества с ведущими мировыми производителями компьютерной и офисной техники</b>
+					<b>Компания SC открыта для обсуждения новых проектов и вариантов расширения сотрудничества с ведущими мировыми производителями компьютерной и офисной техники</b>
 				</span>
 				<footer>&copy; Service center</footer>
 			</div>
