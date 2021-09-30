@@ -7,7 +7,7 @@
     text-align:center;
 }
 .hello__header {
-    font-size: 28px;
+    font-size: 24px;
     color: #f6f9fa;
     text-shadow:0px -2px 12px rgba(0,0,0,0.82)
 }
@@ -39,5 +39,9 @@
 }
 
 .about__description {
-    
+    font-size:18px;
+}
+
+.about__description:nth-child(1){
+    text-align:center;
 }
