@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace KudryavtsevAlexey.ServiceCenter.Controllers
 {
 	public class AccountController : Controller
-    {
+	{
 		private readonly UserManager<ApplicationUser> _userManager;
 		private readonly SignInManager<ApplicationUser> _signInManager;
 
