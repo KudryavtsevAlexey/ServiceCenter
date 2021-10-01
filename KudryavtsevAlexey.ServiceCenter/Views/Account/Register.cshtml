@@ -1,33 +1,33 @@
 ﻿@model RegisterViewModel
 	<div class="container text-center align-items-center justify-content-center form__register">
-		<form asp-controller="Account" asp-action="Register" method="post">
+		<form asp-antiforgery="true" asp-controller="Account" asp-action="Register" method="post">
 			<div asp-validation-summary="ModelOnly"></div>
-			<div class="mb-3">
+			<div class="mb-3 form-group">
 				<label asp-for="@Model.FirstName" class="form-label"></label>
 				<input asp-for="@Model.FirstName" class="form-control w-50" />
 				<span asp-validation-for="@Model.FirstName"></span>
 			</div>
-			<div class="mb-3">
+			<div class="mb-3 form-group">
 				<label asp-for="@Model.LastName" class="form-label"></label>
 				<input asp-for="@Model.LastName" class="form-control w-50" />
 				<span asp-validation-for="@Model.LastName"></span>
 			</div>
-			<div class="mb-3">
+			<div class="mb-3 form-group">
 				<label asp-for="@Model.Email" class="form-label"></label>
 				<input asp-for="@Model.Email" class="form-control w-50" />
 				<span asp-validation-for="@Model.Email"></span>
 			</div>
-			<div class="mb-3">
+			<div class="mb-3 form-group">
 				<label asp-for="@Model.Password" class="form-label"></label>
 				<input asp-for="@Model.Password" class="form-control w-50" />
 				<span asp-validation-for="@Model.Password"></span>
 			</div>
-			<div class="mb-3">
+			<div class="mb-3 form-group">
 				<label asp-for="@Model.ConfirmedPassword" class="form-label"></label>
 				<input asp-for="@Model.ConfirmedPassword" class="form-control w-50" />
 				<span asp-validation-for="@Model.ConfirmedPassword"></span>
 			</div>
-			<div class="mb-3">
+			<div class="mb-3 form-group">
 				<button asp-controller="Account" asp-action="Register" type="submit" class="btn btn-primary">Sign up</button>
 			</div>
 		</form>

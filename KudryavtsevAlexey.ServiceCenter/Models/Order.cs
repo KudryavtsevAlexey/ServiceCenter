@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KudryavtsevAlexey.ServiceCenter.Enums;
+using System;
 
 namespace KudryavtsevAlexey.ServiceCenter.Models
 {
@@ -13,14 +14,6 @@ namespace KudryavtsevAlexey.ServiceCenter.Models
 		public Master Master { get; set; }
 		public decimal AmountToPay { get; set; }
 		public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
-		public enum Status
-		{
-			Accepted,
-			UnderRepair,
-			AwaitingPayment,
-			PaidUp,
-			ReadyToIssue,
-			Issued,
-		}
+		public Status Status { get; set; }
 	}
 }

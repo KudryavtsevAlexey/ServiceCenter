@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using KudryavtsevAlexey.ServiceCenter.Enums;
 
 namespace KudryavtsevAlexey.ServiceCenter.Models
 {
@@ -11,17 +11,7 @@ namespace KudryavtsevAlexey.ServiceCenter.Models
 		public int MasterId { get; set; }
 		public Master Master { get; set; }
 		public Order Order { get; set; }
-		public enum DeviceType
-		{
-			[Display(Name ="Computer technology")]
-			ComputerTechnology,
-			[Display(Name = "Office equipment")]
-			OfficeEquipment,
-			[Display(Name = "Large household appliances")]
-			LargeHomeAppliances,
-			[Display(Name = "Small household appliances")]
-			SmallHouseholdAppliances,
-			Electronics,
-		}
+		public DeviceType Type { get; set; }
+		public bool OnGuarantee { get; set; }
 	}
 }

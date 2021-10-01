@@ -1,20 +1,12 @@
-﻿using KudryavtsevAlexey.ServiceCenter.Data;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace KudryavtsevAlexey.ServiceCenter.Controllers
 {
 	public class OrderController : Controller
-    {
-		private readonly ApplicationContext _db;
-
-		public OrderController(ApplicationContext db)
+	{
+		public IActionResult CheckOrderStatus()
 		{
-			_db = db;
+			return View();
 		}
-
-        public IActionResult CheckOrderStatus()
-		{
-            return View();
-		}
-    }
+	}
 }

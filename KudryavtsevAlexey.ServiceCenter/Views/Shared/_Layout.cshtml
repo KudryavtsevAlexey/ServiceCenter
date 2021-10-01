@@ -23,7 +23,7 @@
 										<a asp-controller="Home" asp-action="Index">Service center</a>
 									</li>
 									<li class="nav-item">
-										<a asp-controller="Home" asp-action="Index">Service center</a>
+										<a asp-controller="Order" asp-action="CheckOrderStatus">Check repair stasus</a>
 									</li>
 									<li class="nav-item">
 										<a asp-controller="Home" asp-action="Index">Service center</a>
@@ -39,14 +39,29 @@
 										<span>Sign up</span>
 									</a>
 									</div>
-								} 
-								else 
+								}
+								else
 								{
-									<div class="justify-content-end">
-										<a class="btn btn-outline-danger" asp-controller="Account" asp-action="Logout">
-											<span>Logout</span>
-										</a>
-									</div>
+									if (User.HasClaim(ClaimTypes.Role, "Master") || 
+										User.HasClaim(ClaimTypes.Role, "Administrator"))
+									{
+										<div class="justify-content-end">
+											<a class="btn btn-outline-primary" asp-controller="Panel" asp-action="CreateOrder">
+												Create order
+											</a>
+											<a class="btn btn-outline-danger" asp-controller="Account" asp-action="Logout">
+												<span>Logout</span>
+											</a>
+										</div>
+									} 
+									else 
+									{
+										<div class="justify-content-end">
+											<a class="btn btn-outline-danger" asp-controller="Account" asp-action="Logout">
+												<span>Logout</span>
+											</a>
+										</div>
+									}
 								}
 							</div>
 						</div>

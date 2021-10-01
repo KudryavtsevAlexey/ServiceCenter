@@ -1,18 +1,18 @@
 ﻿@model LoginViewModel
 <div class="container d-flex justify-content-center text-center form__login">
-	<form asp-controller="Account" asp-action="Login" method="post">
+	<form asp-antiforgery="true" asp-controller="Account" asp-action="Login" method="post">
 		<div asp-validation-summary="ModelOnly"></div>
-		<div class="mb-3">
+		<div class="mb-3 form-group">
 			<label asp-for="@Model.Email" class="form-label"></label>
 			<input asp-for="@Model.Email" class="form-control"/>
 			<span asp-validation-for="@Model.Email"></span>
 		</div>
-		<div class="mb-3">
+		<div class="mb-3 form-group">
 			<label asp-for="@Model.Password" class="form-label"></label>
 			<input asp-for="@Model.Password" class="form-control"/>
 			<span asp-validation-for="@Model.Password"></span>
 		</div>
-		<div class="mb-3">
+		<div class="mb-3 form-group">
 			<button class="btn btn-primary" asp-controller="Account" asp-action="Login" type="submit">Sign in</button>
 		</div>
 	</form>

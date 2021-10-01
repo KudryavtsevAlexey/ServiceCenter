@@ -8,8 +8,5 @@ namespace KudryavtsevAlexey.ServiceCenter.Controllers
 		{
 			return View();
 		}
-
-
-
 	}
 }
