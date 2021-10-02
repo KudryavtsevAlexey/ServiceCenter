@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using KudryavtsevAlexey.ServiceCenter.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace KudryavtsevAlexey.ServiceCenter.Data
 	{
 		public static void Init(IServiceProvider serviceProvider)
 		{
-			var userManager = serviceProvider.GetService<UserManager<ApplicationUser>>();
+			var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 			IEnumerable<Claim> claimsForAdministrator = new List<Claim>
 			{
 				new Claim(ClaimTypes.Role, "Administrator"),
@@ -22,20 +23,20 @@ namespace KudryavtsevAlexey.ServiceCenter.Data
 				new Claim(ClaimTypes.Role, "Master"),
 			};
 
-			CustomCreateUserAsync(userManager, "KudryavtsevAlexey", "a.kudryavcev0812@bk.ru",
+			CustomCreateUserAsync(serviceProvider, userManager, "KudryavtsevAlexey", "a.kudryavcev0812@bk.ru",
 							 "Alexey", "Kudryavtsev",
 								claimsForAdministrator).GetAwaiter().GetResult();
 
-			CustomCreateUserAsync(userManager, "SidorovKirill", "sidorovk1504@mail.ru",
+			CustomCreateUserAsync(serviceProvider, userManager, "SidorovKirill", "sidorovk1504@mail.ru",
 							 "Kirill", "Sidorov",
 								claimsForMaster).GetAwaiter().GetResult();
 
-			CustomCreateUserAsync(userManager, "KerimovMaxim", "kerimovm1806@mail.ru",
+			CustomCreateUserAsync(serviceProvider, userManager, "KerimovMaxim", "kerimovm1806@mail.ru",
 							 "Maxim", "Kerimov",
 								claimsForMaster).GetAwaiter().GetResult();
 		}
 
-		private static async Task CustomCreateUserAsync(UserManager<ApplicationUser> userManager, string userName,
+		private static async Task CustomCreateUserAsync(IServiceProvider serviceProvider,UserManager<ApplicationUser> userManager, string userName,
 												  string email, string firstName, string lastName, IEnumerable<Claim> claims)
 		{
 			var user = new ApplicationUser
@@ -52,6 +53,25 @@ namespace KudryavtsevAlexey.ServiceCenter.Data
 			{
 				await userManager.AddClaimsAsync(user, claims);
 			}
+
+			foreach (var claim in claims)
+			{
+				if (claim.Type == ClaimTypes.Role && claim.Value == "Master")
+				{
+					int id = 1;
+					var db = serviceProvider.GetRequiredService<ApplicationContext>();
+					var master = new Master
+					{
+						FirstName = user.FirstName,
+						LastName = user.LastName,
+						UniqueDescription = $"Master №{id++}: {firstName} {lastName}",
+					};
+					await db.Masters.AddAsync(master);
+					await db.SaveChangesAsync();
+					break;
+				}
+			}
+
 		}
 	}
 }

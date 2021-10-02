@@ -42,12 +42,13 @@
 								}
 								else
 								{
-									if (User.HasClaim(ClaimTypes.Role, "Master") || 
-										User.HasClaim(ClaimTypes.Role, "Administrator"))
+									if (User.HasClaim(ClaimTypes.Role, "Administrator")
+										|| User.HasClaim(ClaimTypes.Role, "Master"))
 									{
 										<div class="justify-content-end">
-											<a class="btn btn-outline-primary" asp-controller="Panel" asp-action="CreateOrder">
-												Create order
+											<a class="btn btn-outline-primary" asp-controller="Order" 
+											   asp-action="ManageOrder">
+												Order management
 											</a>
 											<a class="btn btn-outline-danger" asp-controller="Account" asp-action="Logout">
 												<span>Logout</span>
@@ -73,7 +74,7 @@
 			</div>
 			<div class="footer text-center">
 				<span>
-					<b>Компания SC открыта для обсуждения новых проектов и вариантов расширения сотрудничества с ведущими мировыми производителями компьютерной и офисной техники</b>
+					<b>SC is open to discuss new projects and options for expanding cooperation with the world's leading manufacturers of computer and office equipment</b>
 				</span>
 				<footer>&copy; Service center</footer>
 			</div>

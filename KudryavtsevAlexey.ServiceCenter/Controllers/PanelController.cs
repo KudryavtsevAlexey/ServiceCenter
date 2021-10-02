@@ -3,8 +3,11 @@ using KudryavtsevAlexey.ServiceCenter.Models;
 using KudryavtsevAlexey.ServiceCenter.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace KudryavtsevAlexey.ServiceCenter.Controllers
 {
@@ -18,8 +21,10 @@ namespace KudryavtsevAlexey.ServiceCenter.Controllers
 			_db = db;
 		}
 
-		public IActionResult CreateOrder()
+		public async Task<IActionResult> CreateOrderAsync()
 		{
+			var suitableMasters = await _db.Masters.Where(m=>m.Order==null).ToListAsync();
+			ViewBag.Masters = suitableMasters;
 			return View();
 		}
 
@@ -38,41 +43,55 @@ namespace KudryavtsevAlexey.ServiceCenter.Controllers
 
 			var client = new Client 
 			{
+				Email = covm.Client.Email,
 				FirstName = covm.Client.FirstName,
 				LastName = covm.Client.LastName,
-				Devices = new List<Device>(), //TODO: Right initialization
-				Order = new Order(), //TODO: Right initialization
+				Devices = new List<Device>(),
 			};
 
 			var device = new Device 
 			{
+				Name = covm.Device.Name,
 				Type = covm.Device.Type,
 				ProblemDescription = covm.Device.ProblemDescription,
-				Client = new Client(), //TODO: Right initialization
-				Master = new Master(), //TODO: Right initialization
+				Client = client,
 				OnGuarantee = covm.Device.OnGuarantee,
-				Order = new Order(), //TODO: Right initialization
 			};
 
 			var master = new Master 
 			{
 				FirstName = covm.Master.FirstName,
 				LastName = covm.Master.LastName,
-				Devices = new List<Device>(), //TODO: Right initialization
-				Order = new Order(), //TODO: Right initialization
+				Devices = new List<Device>(),
 			};
+
+			client.Devices.Add(device);
+			device.Master = master;
+			device.Client = client;
+			master.Devices.Add(device);
 
 			var order = new Order
 			{
 				CreatedAt = DateTime.UtcNow,
 				AmountToPay = covm.Order.AmountToPay,
 				Status = covm.Order.Status,
-				Client = new Client(), //TODO: Right initialization
-				Device = new Device(), //TODO: Right initialization
-				Master = new Master(), //TODO: Right initialization
+				Client = client,
+				Device = device,
+				Master = master,
 			};
 
-			return View();
+			client.Order = order;
+			device.Order = order;
+			master.Order = order;
+
+			_db.Clients.Add(client);
+			_db.Devices.Add(device);
+			_db.Masters.Add(master);
+			_db.Orders.Add(order);
+
+			_db.SaveChanges();
+
+			return RedirectToAction("Order", "ManageOrder");
 		}
 	}
 }

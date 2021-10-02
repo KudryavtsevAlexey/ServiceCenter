@@ -4,14 +4,16 @@ using KudryavtsevAlexey.ServiceCenter.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace KudryavtsevAlexey.ServiceCenter.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20211002102343_AddedDeviceNameColumn")]
+    partial class AddedDeviceNameColumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -97,9 +99,6 @@ namespace KudryavtsevAlexey.ServiceCenter.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
 
@@ -158,9 +157,6 @@ namespace KudryavtsevAlexey.ServiceCenter.Migrations
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UniqueDescription")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("MasterId");
 
                     b.ToTable("Masters");
@@ -174,7 +170,7 @@ namespace KudryavtsevAlexey.ServiceCenter.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<decimal>("AmountToPay")
-                        .HasColumnType("decimal(7,2)");
+                        .HasColumnType("decimal(5,2)");
 
                     b.Property<int>("ClientId")
                         .HasColumnType("int");

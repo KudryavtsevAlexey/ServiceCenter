@@ -78,7 +78,7 @@ namespace KudryavtsevAlexey.ServiceCenter.Data
 
 			builder.Entity<Order>()
 				.Property(o => o.AmountToPay)
-				.HasColumnType("decimal(5,2)");
+				.HasColumnType("decimal(7,2)");
 
 			base.OnModelCreating(builder);
 		}

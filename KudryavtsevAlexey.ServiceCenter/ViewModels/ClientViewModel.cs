@@ -4,7 +4,9 @@ namespace KudryavtsevAlexey.ServiceCenter.ViewModels
 {
 	public class ClientViewModel
     {
-        [Display(Name ="First name"), Required]
+        [EmailAddress ,Required]
+		public string Email { get; set; }
+		[Display(Name ="First name"), Required]
         public string FirstName { get; set; }
 
         [Display(Name = "Last name"), Required]

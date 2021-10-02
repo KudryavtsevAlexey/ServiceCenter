@@ -4,7 +4,15 @@
 		<div>
 			<h3>Create order</h3>
 		</div>
+		<div>
+			<h4>Fill in information about client</h4>
+		</div>
 		<div asp-validation-summary="ModelOnly"></div>
+		<div class="mb-3 form-group">
+			<label asp-for="@Model.Client.Email" class="form-label"></label>
+			<input asp-for="@Model.Client.Email" class="form-control" />
+			<span asp-validation-for="@Model.Client.Email"></span>
+		</div>
 		<div class="mb-3 form-group">
 			<label asp-for="@Model.Client.FirstName" class="form-label"></label>
 			<input asp-for="@Model.Client.FirstName" class="form-control" />
@@ -15,6 +23,9 @@
 			<input asp-for="@Model.Client.LastName" class="form-control" />
 			<span asp-validation-for="@Model.Client.LastName"></span>
 		</div>
+		<div>
+			<h4>Fill in information about device</h4>
+		</div>
 		<div class="mb-3 form-group">
 			<label asp-for="@Model.Device.Type" class="form-label"></label>
 			<select asp-for="@Model.Device.Type" class="form-control" asp-items="Html.GetEnumSelectList<DeviceType>()">
@@ -23,24 +34,28 @@
 			<span asp-validation-for="@Model.Device.Type"></span>
 		</div>
 		<div class="mb-3 form-group">
+			<label asp-for="@Model.Device.Name" class="form-label"></label>
+			<input asp-for="@Model.Device.Name" class="form-control" />
+			<span asp-validation-for="@Model.Device.Name"></span>
+		</div>
+		<div class="mb-3 form-group">
 			<label asp-for="@Model.Device.ProblemDescription" class="form-label"></label>
 			<textarea asp-for="@Model.Device.ProblemDescription" class="form-control"><</textarea>
 			<span asp-validation-for="@Model.Device.ProblemDescription"></span>
 		</div>
 		<div class="mb-3 form-group">
 			<label asp-for="@Model.Device.OnGuarantee" class="form-label"></label>
-			<input asp-for="@Model.Device.OnGuarantee"/>
+			<input asp-for="@Model.Device.OnGuarantee" />
 			<span asp-validation-for="@Model.Device.OnGuarantee"></span>
 		</div>
-		<div class="mb-3 form-group">
-			<label asp-for="@Model.Master.FirstName" class="form-label"></label>
-			<input asp-for="@Model.Master.FirstName" class="form-control" />
-			<span asp-validation-for="@Model.Master.FirstName"></span>
+		<div>
+			<h4>Fill in information about master</h4>
 		</div>
 		<div class="mb-3 form-group">
-			<label asp-for="@Model.Master.LastName" class="form-label"></label>
-			<input asp-for="@Model.Master.LastName" class="form-control" />
-			<span asp-validation-for="@Model.Master.LastName"></span>
+			<label asp-for="@Model.Master" class="form-label"></label>
+			<select asp-for="@Model.Master" class="form-control" asp-items="@(new SelectList(ViewBag.Masters,"MasterId","UniqueDescription"))">
+				<option>Select master...</option>
+			</select>
 		</div>
 		<div class="mb-3 form-group">
 			<label asp-for="@Model.Order.AmountToPay" class="form-label"></label>

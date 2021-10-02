@@ -8,6 +8,7 @@ namespace KudryavtsevAlexey.ServiceCenter.Models
 		public string FirstName { get; set; }
 		public string LastName { get; set; }
 		public Order Order { get; set; }
-		public IEnumerable<Device> Devices { get; set; }
+		public string UniqueDescription { get; set; }
+		public List<Device> Devices { get; set; }
 	}
 }
