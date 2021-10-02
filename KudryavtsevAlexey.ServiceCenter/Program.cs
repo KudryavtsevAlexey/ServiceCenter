@@ -1,4 +1,3 @@
-using KudryavtsevAlexey.ServiceCenter.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -12,7 +11,7 @@ namespace KudryavtsevAlexey.ServiceCenter
 			var host = CreateHostBuilder(args).Build();
 			using (var scope = host.Services.CreateScope())
 			{
-				DatabaseInitializer.Init(scope.ServiceProvider);
+				//DatabaseInitializer.Init(scope.ServiceProvider);
 			}
 			host.Run();
 		}
