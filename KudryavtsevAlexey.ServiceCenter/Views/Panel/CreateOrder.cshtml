@@ -52,8 +52,8 @@
 			<h4>Fill in information about master</h4>
 		</div>
 		<div class="mb-3 form-group">
-			<label asp-for="@Model.Master" class="form-label"></label>
-			<select asp-for="@Model.Master" class="form-control" asp-items="@(new SelectList(ViewBag.Masters,"MasterId","UniqueDescription"))">
+			<label asp-for="@Model.Master.MasterId" class="form-label"></label>
+			<select asp-for="@Model.Master.MasterId" class="form-control" asp-items="@(new SelectList(ViewBag.Masters,"MasterId","UniqueDescription"))">
 				<option>Select master...</option>
 			</select>
 		</div>

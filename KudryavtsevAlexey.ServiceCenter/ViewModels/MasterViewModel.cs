@@ -4,10 +4,13 @@ namespace KudryavtsevAlexey.ServiceCenter.ViewModels
 {
 	public class MasterViewModel
 	{
-		[Display(Name ="First name"), Required]
+		[Required]
+		public int MasterId { get; set; }
+		
 		public string FirstName { get; set; }
 
-		[Display(Name ="Last name"), Required]
+		public string UniqueDescription { get; set; }
+
 		public string LastName { get; set; }
 	}
 }

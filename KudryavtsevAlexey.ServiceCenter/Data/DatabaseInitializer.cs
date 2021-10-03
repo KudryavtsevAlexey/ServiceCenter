@@ -10,6 +10,8 @@ namespace KudryavtsevAlexey.ServiceCenter.Data
 {
 	public class DatabaseInitializer
 	{
+		private static int Id = 1;
+
 		public static void Init(IServiceProvider serviceProvider)
 		{
 			var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
@@ -58,13 +60,12 @@ namespace KudryavtsevAlexey.ServiceCenter.Data
 			{
 				if (claim.Type == ClaimTypes.Role && claim.Value == "Master")
 				{
-					int id = 1;
 					var db = serviceProvider.GetRequiredService<ApplicationContext>();
 					var master = new Master
 					{
 						FirstName = user.FirstName,
 						LastName = user.LastName,
-						UniqueDescription = $"Master №{id++}: {firstName} {lastName}",
+						UniqueDescription = $"Master №{Id++}: {firstName} {lastName}",
 					};
 					await db.Masters.AddAsync(master);
 					await db.SaveChangesAsync();
