@@ -22,7 +22,7 @@ namespace KudryavtsevAlexey.ServiceCenter.Data
 				.HasKey(c => c.ClientId);
 
 			builder.Entity<Client>()
-				.HasOne(o => o.Order)
+				.HasMany(o => o.Orders)
 				.WithOne(c => c.Client)
 				.IsRequired();
 
@@ -53,7 +53,7 @@ namespace KudryavtsevAlexey.ServiceCenter.Data
 				.HasKey(m => m.MasterId);
 
 			builder.Entity<Master>()
-				.HasOne(o => o.Order)
+				.HasMany(o => o.Orders)
 				.WithOne(m => m.Master);
 
 			builder.Entity<Master>()
@@ -66,7 +66,7 @@ namespace KudryavtsevAlexey.ServiceCenter.Data
 
 			builder.Entity<Order>()
 				.HasOne(c => c.Client)
-				.WithOne(o => o.Order);
+				.WithMany(o => o.Orders);
 
 			builder.Entity<Order>()
 				.HasOne(d=>d.Device)
@@ -74,7 +74,7 @@ namespace KudryavtsevAlexey.ServiceCenter.Data
 
 			builder.Entity<Order>()
 				.HasOne(m=>m.Master)
-				.WithOne(o => o.Order);
+				.WithMany(o => o.Orders);
 
 			builder.Entity<Order>()
 				.Property(o => o.AmountToPay)

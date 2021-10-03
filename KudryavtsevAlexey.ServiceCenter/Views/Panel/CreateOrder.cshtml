@@ -49,13 +49,16 @@
 			<span asp-validation-for="@Model.Device.OnGuarantee"></span>
 		</div>
 		<div>
-			<h4>Fill in information about master</h4>
+			<h4>Choose a master</h4>
 		</div>
 		<div class="mb-3 form-group">
-			<label asp-for="@Model.Master.MasterId" class="form-label"></label>
+			<label asp-for="@Model.Master.MasterId" class="form-label">Master</label>
 			<select asp-for="@Model.Master.MasterId" class="form-control" asp-items="@(new SelectList(ViewBag.Masters,"MasterId","UniqueDescription"))">
 				<option>Select master...</option>
 			</select>
+		</div>
+		<div>
+			<h4>Fill in information about order</h4>
 		</div>
 		<div class="mb-3 form-group">
 			<label asp-for="@Model.Order.AmountToPay" class="form-label"></label>
@@ -73,7 +76,7 @@
 			<button class="btn btn-primary" asp-controller="Panel" asp-action="CreateOrder" type="submit">Create order</button>
 		</div>
 		<div class="mb-3 form-group">
-			<a class="btn btn-info" asp-controller="Home" asp-action="Index">Cancel</a>
+			<a class="btn btn-info" asp-controller="Order" asp-action="ManageOrder">Cancel</a>
 		</div>
 	</form>
 </div>

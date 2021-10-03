@@ -23,23 +23,28 @@ namespace KudryavtsevAlexey.ServiceCenter.Controllers
 			_mapper = mapper;
 		}
 
-		public async Task<IActionResult> CreateOrderAsync()
+		public async Task<IActionResult> CreateOrder()
 		{
-			var suitableMasters = await _db.Masters.Where(m=>m.Order==null).ToListAsync();
-			if (suitableMasters.Count()!=0)
+			var suitableMasters = await _db.Masters
+				.Include(m=>m.Orders)
+				.Select(m=>new MasterViewModel{MasterId = m.MasterId,
+					UniqueDescription = m.UniqueDescription, OrdersCount = m.Orders.Count()})
+				.ToListAsync();
+
+			suitableMasters.OrderBy(m => m.OrdersCount);
+
+			var masters = new List<MasterViewModel>();
+			foreach (var master in suitableMasters)
 			{
-				var masters = new List<MasterViewModel>();
-				foreach (var master in suitableMasters)
-				{
-					masters.Add(_mapper.Map<MasterViewModel>(master));
-				}
-				ViewBag.Masters = masters;
+				master.UniqueDescription += $"; Orders count = {master.OrdersCount}";
+				masters.Add(_mapper.Map<MasterViewModel>(master));
 			}
+			ViewBag.Masters = masters; 
 			return View();
 		}
 
 		[HttpPost]
-		public IActionResult CreateOrder(CompoundOrderViewModel covm)
+		public async Task<IActionResult> CreateOrder(CompoundOrderViewModel covm)
 		{
 			if (!ModelState.IsValid)
 			{
@@ -51,30 +56,11 @@ namespace KudryavtsevAlexey.ServiceCenter.Controllers
 				covm.Order.AmountToPay = 0;
 			}
 
-			//var client = new Client 
-			//{
-			//	Email = covm.Client.Email,
-			//	FirstName = covm.Client.FirstName,
-			//	LastName = covm.Client.LastName,
-			//	Devices = new List<Device>(),
-			//};
-
-			//var device = new Device 
-			//{
-			//	Name = covm.Device.Name,
-			//	Type = covm.Device.Type,
-			//	ProblemDescription = covm.Device.ProblemDescription,
-			//	Client = client,
-			//	OnGuarantee = covm.Device.OnGuarantee,
-			//};
 			var client = _mapper.Map<Client>(covm.Client);
 
 			var device = _mapper.Map<Device>(covm.Device);
 
-			client.Devices = new List<Device>();
-
 			var master = _db.Masters.Find(covm.Master.MasterId);
-			master.Devices = new List<Device>();
 
 			client.Devices.Add(device);
 			device.Master = master;
@@ -87,17 +73,17 @@ namespace KudryavtsevAlexey.ServiceCenter.Controllers
 			order.Device = device;
 			order.Master = master;
 
-			client.Order = order;
+			client.Orders.Add(order);
 			device.Order = order;
-			master.Order = order;
+			master.Orders.Add(order);
 
-			_db.Clients.Add(client);
-			_db.Devices.Add(device);
-			_db.Orders.Add(order);
+			await _db.Clients.AddAsync(client);
+			await _db.Devices.AddAsync(device);
+			await _db.Orders.AddAsync(order);
 
-			_db.SaveChanges();
+			await _db.SaveChangesAsync();
 
-			return RedirectToAction("Order", "ManageOrder");
+			return RedirectToAction("ManageOrder", "Order");
 		}
 	}
 }

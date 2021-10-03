@@ -8,7 +8,7 @@ namespace KudryavtsevAlexey.ServiceCenter.Models
 		public string Email { get; set; }
 		public string FirstName { get; set; }
 		public string LastName { get; set; }
-		public Order Order { get; set; }
-		public List<Device> Devices { get; set; }
+		public ICollection<Order> Orders { get; set; } = new List<Order>();
+		public ICollection<Device> Devices { get; set; } = new List<Device>();
 	}
 }
