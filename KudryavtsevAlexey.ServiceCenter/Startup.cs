@@ -1,5 +1,6 @@
 using KudryavtsevAlexey.ServiceCenter.Data;
 using KudryavtsevAlexey.ServiceCenter.Profiles;
+using KudryavtsevAlexey.ServiceCenter.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -66,6 +67,8 @@ namespace KudryavtsevAlexey.ServiceCenter
 			});
 
 			services.AddAutoMapper(typeof(MappingProfile));
+			services.AddScoped<IMasterService, MasterService>();
+			services.AddScoped<IOrderService, OrderService>();
 		}
 
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

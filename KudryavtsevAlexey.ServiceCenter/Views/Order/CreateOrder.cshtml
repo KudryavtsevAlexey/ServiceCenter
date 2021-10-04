@@ -1,0 +1,82 @@
+﻿@model CompoundOrderViewModel
+<div class="container d-flex justify-content-center text-center">
+	<form asp-controller="Order" asp-action="CreateOrder" method="post">
+		<div>
+			<h3>Create order</h3>
+		</div>
+		<div>
+			<h4>Fill in information about client</h4>
+		</div>
+		<div asp-validation-summary="ModelOnly"></div>
+		<div class="mb-3 form-group">
+			<label asp-for="@Model.Client.Email" class="form-label"></label>
+			<input asp-for="@Model.Client.Email" class="form-control" />
+			<span asp-validation-for="@Model.Client.Email"></span>
+		</div>
+		<div class="mb-3 form-group">
+			<label asp-for="@Model.Client.FirstName" class="form-label"></label>
+			<input asp-for="@Model.Client.FirstName" class="form-control" />
+			<span asp-validation-for="@Model.Client.FirstName"></span>
+		</div>
+		<div class="mb-3 form-group">
+			<label asp-for="@Model.Client.LastName" class="form-label"></label>
+			<input asp-for="@Model.Client.LastName" class="form-control" />
+			<span asp-validation-for="@Model.Client.LastName"></span>
+		</div>
+		<div>
+			<h4>Fill in information about device</h4>
+		</div>
+		<div class="mb-3 form-group">
+			<label asp-for="@Model.Device.Type" class="form-label"></label>
+			<select asp-for="@Model.Device.Type" class="form-control" asp-items="Html.GetEnumSelectList<DeviceType>()">
+				<option>Select type...</option>
+			</select>
+			<span asp-validation-for="@Model.Device.Type"></span>
+		</div>
+		<div class="mb-3 form-group">
+			<label asp-for="@Model.Device.Name" class="form-label"></label>
+			<input asp-for="@Model.Device.Name" class="form-control" />
+			<span asp-validation-for="@Model.Device.Name"></span>
+		</div>
+		<div class="mb-3 form-group">
+			<label asp-for="@Model.Device.ProblemDescription" class="form-label"></label>
+			<textarea asp-for="@Model.Device.ProblemDescription" class="form-control"><</textarea>
+			<span asp-validation-for="@Model.Device.ProblemDescription"></span>
+		</div>
+		<div class="mb-3 form-group">
+			<label asp-for="@Model.Device.OnGuarantee" class="form-label"></label>
+			<input asp-for="@Model.Device.OnGuarantee" />
+			<span asp-validation-for="@Model.Device.OnGuarantee"></span>
+		</div>
+		<div>
+			<h4>Choose a master</h4>
+		</div>
+		<div class="mb-3 form-group">
+			<label asp-for="@Model.Master.MasterId" class="form-label">Master</label>
+			<select asp-for="@Model.Master.MasterId" class="form-control" asp-items="@(new SelectList(ViewBag.Masters,"MasterId","UniqueDescription"))">
+				<option>Select master...</option>
+			</select>
+		</div>
+		<div>
+			<h4>Fill in information about order</h4>
+		</div>
+		<div class="mb-3 form-group">
+			<label asp-for="@Model.Order.AmountToPay" class="form-label"></label>
+			<input asp-for="@Model.Order.AmountToPay" class="form-control" />
+			<span asp-validation-for="@Model.Order.AmountToPay"></span>
+		</div>
+		<div class="mb-3 form-group">
+			<label asp-for="@Model.Order.Status" class="form-label"></label>
+			<select asp-for="@Model.Order.Status" class="form-control" asp-items="Html.GetEnumSelectList<Status>()">
+				<option>Select status...</option>
+			</select>
+			<span asp-validation-for="@Model.Order.Status"></span>
+		</div>
+		<div class="mb-3 form-group">
+			<button class="btn btn-primary" asp-controller="Order" asp-action="CreateOrder" type="submit">Create order</button>
+		</div>
+		<div class="mb-3 form-group">
+			<a class="btn btn-info" asp-controller="Panel" asp-action="ManageOrder">Cancel</a>
+		</div>
+	</form>
+</div>

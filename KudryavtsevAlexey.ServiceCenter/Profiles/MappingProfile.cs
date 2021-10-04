@@ -8,11 +8,14 @@ namespace KudryavtsevAlexey.ServiceCenter.Profiles
 	{
 		public MappingProfile()
 		{
-			CreateMap<ClientViewModel, Client>();
-			CreateMap<DeviceViewModel, Device>();
+			CreateMap<ClientViewModel, Client>()
+				.ReverseMap();
+			CreateMap<DeviceViewModel, Device>()
+				.ReverseMap();
 			CreateMap<MasterViewModel, Master>()
 				.ReverseMap();
-			CreateMap<OrderViewModel, Order>();
+			CreateMap<OrderViewModel, Order>()
+				.ReverseMap();
 		}
 	}
 }

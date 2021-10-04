@@ -1,6 +1,6 @@
 ﻿@model RegisterViewModel
 	<div class="container text-center align-items-center justify-content-center form__register">
-		<form asp-antiforgery="true" asp-controller="Account" asp-action="Register" method="post">
+		<form asp-controller="Account" asp-action="Register" method="post">
 			<div asp-validation-summary="ModelOnly"></div>
 			<div class="mb-3 form-group">
 				<label asp-for="@Model.FirstName" class="form-label"></label>

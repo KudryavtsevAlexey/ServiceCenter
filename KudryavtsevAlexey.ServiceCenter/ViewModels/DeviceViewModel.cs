@@ -5,6 +5,7 @@ namespace KudryavtsevAlexey.ServiceCenter.ViewModels
 {
 	public class DeviceViewModel
 	{
+		public int DeviceId { get; set; }
 		[Required]
 		public string Name { get; set; }
 
