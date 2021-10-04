@@ -48,7 +48,7 @@
 						}
 						<td>@order.Master.FirstName</td>
 						<td>@order.Master.LastName</td>
-						<td><a asp-controller="Panel" asp-action="MoreDetails" asp-route-id="@order.OrderId" class="btn btn-info">More details</a></td>
+						<td><a asp-controller="Order" asp-action="MoreDetails" asp-route-id="@order.OrderId" class="btn btn-info">More details</a></td>
 						<td><a asp-controller="Home" asp-action="EditOrder" asp-route-id="@order.OrderId" class="btn btn-warning">Edit order</a></td>
 						<td><a asp-controller="Home" asp-action="DeleteOrder" asp-route-id="@order.OrderId" class="btn btn-danger">Delete order</a></td>
 					</tr>
