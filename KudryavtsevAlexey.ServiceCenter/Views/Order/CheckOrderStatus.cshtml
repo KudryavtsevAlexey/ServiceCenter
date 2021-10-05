@@ -1,11 +1,36 @@
-﻿<div>
-	<h3>
-		<span>Checking the repair status</span>
-	</h3>
-</div>
-<div class="container">
-
-	<form asp-controller="Order" asp-action="CheckOrderStatus" method="post">
-
-	</form>
+﻿@model ClientIdentificationViewModel
+<div class="container d-flex justify-content-center text-center mt-5">
+	<div>
+		<div>
+			<h3 class="display-5">
+				Checking the repair status
+			</h3>
+		</div>
+		<form asp-controller="Order" asp-action="CheckOrderStatus" method="post">
+			<div asp-validation-summary="ModelOnly"></div>
+			<div class="mb-3 form-group">
+				<label asp-for="ClientFirstName" class="form-label"></label>
+				<input asp-for="ClientFirstName" class="form-control" />
+				<span asp-validation-for="ClientFirstName"></span>
+			</div>
+			<div class="mb-3 form-group">
+				<label asp-for="ClientLastName" class="form-label"></label>
+				<input asp-for="ClientLastName" class="form-control" />
+				<span asp-validation-for="ClientLastName"></span>
+			</div>
+			<div class="mb-3 form-group">
+				<label asp-for="CLientEmail" class="form-label"></label>
+				<input asp-for="CLientEmail" class="form-control" />
+				<span asp-validation-for="CLientEmail"></span>
+			</div>
+			<div class="mb-3 form-group">
+				<button class="btn btn-primary" type="submit" asp-controller="Order" asp-action="CheckOrderStatus">
+					Check order status
+				</button>
+			</div>
+			<div class="mb-3 form-group">
+				<a asp-controller="Home" asp-action="Index" class="btn btn-info">Return to home page</a>
+			</div>
+		</form>
+	</div>
 </div>

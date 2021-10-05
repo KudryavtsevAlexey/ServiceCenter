@@ -1,0 +1,43 @@
+﻿@model CompoundOrderViewModel
+<div class="container mt-5 text-center">
+	<div>
+		<h3 class="display-4 mb-3">
+			Order status: @Model.Order.Status <br> Amount to pay: @Model.Order.AmountToPay
+		</h3>
+		<div class="mb-3">
+			Your email: @Model.Client.Email
+		</div>
+		<div class="mb-3">
+			Your first name: @Model.Client.FirstName
+		</div>
+		<div class="mb-3">
+			Your last name: @Model.Client.LastName
+		</div>
+		<div class="mb-3">
+			Device type: @Model.Device.Type
+		</div>
+		<div class="mb-3">
+			Device name: @Model.Device.Name
+		</div>
+		@if (Model.Device.OnGuarantee)
+		{
+			<div class="mb-3">
+				Your device is now on guarantee
+			</div>
+		} else
+		{
+			<div class="mb-3">
+				Your device is now not on guarantee
+			</div>
+		}
+		<div class="mb-3">
+			Device problem description: @Model.Device.ProblemDescription
+		</div>
+		<div class="mb-3">
+			Master first name: @Model.Master.FirstName
+		</div>
+		<div class="mb-3">
+			Master last name: @Model.Master.LastName
+		</div>
+	</div>
+</div>

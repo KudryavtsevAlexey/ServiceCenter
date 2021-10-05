@@ -2,12 +2,14 @@
 using KudryavtsevAlexey.ServiceCenter.Data;
 using KudryavtsevAlexey.ServiceCenter.Services;
 using KudryavtsevAlexey.ServiceCenter.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
 namespace KudryavtsevAlexey.ServiceCenter.Controllers
 {
+	[Authorize(Policy ="Master")]
 	public class OrderController : Controller
 	{
 		private readonly ApplicationContext _db;
@@ -134,9 +136,38 @@ namespace KudryavtsevAlexey.ServiceCenter.Controllers
 			return RedirectToAction("ManageOrder", "Panel");
 		}
 
+		[AllowAnonymous]
 		public IActionResult CheckOrderStatus()
 		{
 			return View();
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> CheckOrderStatusAsync(ClientIdentificationViewModel clientIdentificationVM)
+		{
+			if (clientIdentificationVM == null)
+			{
+				return NotFound();
+			}
+
+			var order = await _db.Orders
+				.Include(o => o.Client)
+				.Include(o=>o.Device)
+				.Include(o=>o.Master)
+				.FirstOrDefaultAsync(o => o.Client.Email == clientIdentificationVM.CLientEmail
+				&& o.Client.FirstName.ToLower() == clientIdentificationVM.ClientFirstName.ToLower()
+				&& o.Client.LastName.ToLower() == clientIdentificationVM.ClientLastName.ToLower());
+
+			if (order!=null)
+			{
+				var orderStatus = _mapper.Map<CompoundOrderViewModel>(order);
+				orderStatus.Client = _mapper.Map<ClientViewModel>(order.Client);
+				orderStatus.Device = _mapper.Map<DeviceViewModel>(order.Device);
+				orderStatus.Master = _mapper.Map<MasterViewModel>(order.Master);
+				orderStatus.Order = _mapper.Map<OrderViewModel>(order);
+				return View("ShowOrderStatus", orderStatus);
+			}
+			return View(clientIdentificationVM);
 		}
 	}
 }
