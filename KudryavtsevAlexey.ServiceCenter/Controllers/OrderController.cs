@@ -119,6 +119,21 @@ namespace KudryavtsevAlexey.ServiceCenter.Controllers
 			return RedirectToAction("ManageOrder", "Panel");
 		}
 
+		public async Task<IActionResult> DeleteOrder(int? id)
+		{
+			if (id==null)
+			{
+				return NotFound();
+			}
+
+			var order = await _db.Orders.FindAsync(id);
+
+			_db.Remove(order);
+			await _db.SaveChangesAsync();
+
+			return RedirectToAction("ManageOrder", "Panel");
+		}
+
 		public IActionResult CheckOrderStatus()
 		{
 			return View();
