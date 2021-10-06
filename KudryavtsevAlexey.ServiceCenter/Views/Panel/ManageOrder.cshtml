@@ -36,7 +36,7 @@
 						<td>@order.Client.FirstName</td>
 						<td>@order.Client.LastName</td>
 						<td>@order.Device.Name</td>
-						<td>@order.Device.Type</td>
+						<td>@EnumService.GetDescription(order.Device.Type)</td>
 						@if (order.Device.OnGuarantee)
 						{
 							<td>Yes</td>

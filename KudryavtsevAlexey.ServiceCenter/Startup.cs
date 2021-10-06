@@ -67,8 +67,9 @@ namespace KudryavtsevAlexey.ServiceCenter
 			});
 
 			services.AddAutoMapper(typeof(MappingProfile));
-			services.AddScoped<IMasterService, MasterService>();
-			services.AddScoped<IOrderService, OrderService>();
+
+			services.AddTransient<IMasterService, MasterService>();
+			services.AddTransient<IOrderService, OrderService>();
 		}
 
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

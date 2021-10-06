@@ -4,7 +4,7 @@
 		Device name : @Model.Name
 	</div>
 	<div class="mb-3">
-		Device type : @Model.Type
+		Device type : @EnumService.GetDescription(Model.Type)
 	</div>
 	<div class="mb-3">
 		Device problem description: @Model.ProblemDescription

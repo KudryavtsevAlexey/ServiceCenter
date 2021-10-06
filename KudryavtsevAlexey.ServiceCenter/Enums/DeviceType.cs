@@ -1,17 +1,18 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
 
 namespace KudryavtsevAlexey.ServiceCenter.Enums
 {
 	public enum DeviceType
 	{
-		[Display(Name = "Computer technology")]
+		[Description("Computer technology")]
 		ComputerTechnology,
-		[Display(Name = "Office equipment")]
+		[Description("Office equipment")]
 		OfficeEquipment,
-		[Display(Name = "Large household appliances")]
+		[Description("Large home appliances")]
 		LargeHomeAppliances,
-		[Display(Name = "Small household appliances")]
+		[Description("Small household appliances")]
 		SmallHouseholdAppliances,
+		[Description("Electronics")]
 		Electronics,
 	}
 }
