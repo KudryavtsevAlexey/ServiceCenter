@@ -1,4 +1,5 @@
 using KudryavtsevAlexey.ServiceCenter.Data;
+using KudryavtsevAlexey.ServiceCenter.Integrations;
 using KudryavtsevAlexey.ServiceCenter.Profiles;
 using KudryavtsevAlexey.ServiceCenter.Services;
 using Microsoft.AspNetCore.Builder;
@@ -70,6 +71,7 @@ namespace KudryavtsevAlexey.ServiceCenter
 
 			services.AddTransient<IMasterService, MasterService>();
 			services.AddTransient<IOrderService, OrderService>();
+			services.AddTransient<IGitHubClientIntegration, GitHubClientIntegration>();
 		}
 
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

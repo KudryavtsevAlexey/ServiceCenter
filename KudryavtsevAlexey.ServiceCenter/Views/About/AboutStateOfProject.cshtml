@@ -1,0 +1,27 @@
+﻿@model IEnumerable<Octokit.ProjectCard>
+<div class="container text-center mt-5">
+	<table class="table">
+		<thead class="">
+			<tr>
+				<th scope="col">#</th>
+				<th scope="col">Note</th>
+				<th scope="col">CreatedAt</th>
+				<th scope="col">UpdatedAt</th>
+			</tr>
+		</thead>
+		<tbody>
+			@{ 
+				int id = 1;
+			}
+			@foreach (var card in Model)
+			{
+			<tr>
+				<td>@(id++)</td>
+				<td>@card.Note</td>
+				<td>@card.CreatedAt.UtcDateTime</td>
+				<td>@card.UpdatedAt.UtcDateTime</td>
+			</tr>
+			}
+		</tbody>
+	</table>
+</div>

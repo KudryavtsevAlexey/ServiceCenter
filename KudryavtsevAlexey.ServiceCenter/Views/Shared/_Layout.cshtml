@@ -42,27 +42,43 @@
 								}
 								else
 								{
-									if (User.HasClaim(ClaimTypes.Role, "Administrator")
-										|| User.HasClaim(ClaimTypes.Role, "Master"))
-									{
-										<div class="justify-content-end">
-											<a class="btn btn-outline-primary" asp-controller="Panel" 
-											   asp-action="ManageOrder">
-												Order management
-											</a>
-											<a class="btn btn-outline-danger" asp-controller="Account" asp-action="Logout">
-												<span>Logout</span>
-											</a>
-										</div>
-									} 
-									else 
-									{
-										<div class="justify-content-end">
-											<a class="btn btn-outline-danger" asp-controller="Account" asp-action="Logout">
-												<span>Logout</span>
-											</a>
-										</div>
+
+							<div class="justify-content-end">
+								@if (User.HasClaim(ClaimTypes.Role, "Administrator")
+									&& !User.HasClaim(ClaimTypes.Role, "Master"))
+								{
+									<a class="btn btn-outline-info" asp-controller="About"
+									   asp-action="AboutStateOfProject">
+										About state of project
+									</a>
+									<a class="btn btn-outline-primary" asp-controller="Panel"
+									   asp-action="ManageOrder">
+										Order management
+									</a>
+									<a class="btn btn-outline-danger" asp-controller="Account"
+									   asp-action="Logout">
+										<span>Logout</span>
+									</a>
+								}
+								else if (User.HasClaim(ClaimTypes.Role, "Administrator")
+									|| User.HasClaim(ClaimTypes.Role, "Master"))
+								{
+									<a class="btn btn-outline-primary" asp-controller="Panel"
+									   asp-action="ManageOrder">
+										Order management
+									</a>
+									<a class="btn btn-outline-danger" asp-controller="Account"
+									   asp-action="Logout">
+										<span>Logout</span>
+									</a>
 									}
+								else
+								{
+									<a class="btn btn-outline-danger" asp-controller="Account" asp-action="Logout">
+										<span>Logout</span>
+									</a>
+								}
+							</div>
 								}
 							</div>
 						</div>
