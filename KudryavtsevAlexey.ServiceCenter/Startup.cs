@@ -69,9 +69,9 @@ namespace KudryavtsevAlexey.ServiceCenter
 
 			services.AddAutoMapper(typeof(MappingProfile));
 
-			services.AddTransient<IMasterService, MasterService>();
-			services.AddTransient<IOrderService, OrderService>();
-			services.AddTransient<IGitHubClientIntegration, GitHubClientIntegration>();
+			services.AddScoped<IMasterService, MasterService>();
+			services.AddScoped<IOrderService, OrderService>();
+			services.AddScoped<IGitHubClientIntegration, GitHubClientIntegration>();
 		}
 
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

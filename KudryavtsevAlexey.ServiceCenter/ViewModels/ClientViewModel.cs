@@ -4,12 +4,11 @@ namespace KudryavtsevAlexey.ServiceCenter.ViewModels
 {
 	public class ClientViewModel
     {
-        [EmailAddress ,Required]
+		[Required, Display(Name = "Your first name")]
+		public string FirstName { get; set; }
+		[Required, Display(Name = "Your last name")]
+		public string LastName { get; set; }
+		[EmailAddress, Required, Display(Name = "Your email")]
 		public string Email { get; set; }
-		[Display(Name ="First name"), Required]
-        public string FirstName { get; set; }
-
-        [Display(Name = "Last name"), Required]
-        public string LastName { get; set; }
-    }
+	}
 }

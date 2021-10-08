@@ -142,10 +142,10 @@ namespace KudryavtsevAlexey.ServiceCenter.Controllers
 			return View();
 		}
 
-		[HttpPost]
-		public async Task<IActionResult> CheckOrderStatusAsync(ClientIdentificationViewModel clientIdentificationVM)
+		[HttpPost, AllowAnonymous]
+		public async Task<IActionResult> CheckOrderStatusAsync(ClientViewModel client)
 		{
-			if (clientIdentificationVM == null)
+			if (client == null)
 			{
 				return NotFound();
 			}
@@ -154,20 +154,22 @@ namespace KudryavtsevAlexey.ServiceCenter.Controllers
 				.Include(o => o.Client)
 				.Include(o=>o.Device)
 				.Include(o=>o.Master)
-				.FirstOrDefaultAsync(o => o.Client.Email == clientIdentificationVM.CLientEmail
-				&& o.Client.FirstName.ToLower() == clientIdentificationVM.ClientFirstName.ToLower()
-				&& o.Client.LastName.ToLower() == clientIdentificationVM.ClientLastName.ToLower());
+				.FirstOrDefaultAsync(o => o.Client.Email == client.Email
+				&& o.Client.FirstName.ToLower() == client.FirstName.ToLower()
+				&& o.Client.LastName.ToLower() == client.LastName.ToLower());
 
 			if (order!=null)
 			{
 				var orderStatus = _mapper.Map<CompoundOrderViewModel>(order);
+
 				orderStatus.Client = _mapper.Map<ClientViewModel>(order.Client);
 				orderStatus.Device = _mapper.Map<DeviceViewModel>(order.Device);
 				orderStatus.Master = _mapper.Map<MasterViewModel>(order.Master);
 				orderStatus.Order = _mapper.Map<OrderViewModel>(order);
+
 				return View("ShowOrderStatus", orderStatus);
 			}
-			return View(clientIdentificationVM);
+			return View(client);
 		}
 	}
 }
