@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
+using Octokit;
 
 namespace KudryavtsevAlexey.ServiceCenter.Controllers
 {
@@ -25,10 +26,24 @@ namespace KudryavtsevAlexey.ServiceCenter.Controllers
 
 			var serviceCenterProject = projects.FirstOrDefault(x=>x.Name == "ServiceCenter");
 
-			var cards = await _gitHub
-				.GetProjectCards(client, serviceCenterProject.Id);
+			if (serviceCenterProject != null)
+			{
+				var cards = await _gitHub
+					.GetProjectCards(client, serviceCenterProject.Id);
 
-			return View(cards);
+				return View(cards);
+			}
+
+			return RedirectToAction("Index", "Home");
 		}
+
+        public async Task<IActionResult> AboutProjectCreator()
+        {
+	        var client = _gitHub.GetClient();
+
+	        var repositories = await client.Repository.GetAllForUser("KudryavtsevAlexey");
+
+	        return View(repositories);
+        }
     }
 }
