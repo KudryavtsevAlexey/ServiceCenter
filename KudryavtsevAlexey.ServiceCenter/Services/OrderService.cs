@@ -17,20 +17,20 @@ namespace KudryavtsevAlexey.ServiceCenter.Services
 			_db = db;
 		}
 
-		public async Task MapOrder(CompoundOrderViewModel covm)
+		public async Task MapOrder(OrderViewModel model)
 		{
-			var client = _mapper.Map<Client>(covm.Client);
+			var client = _mapper.Map<Client>(model.Client);
 
-			var device = _mapper.Map<Device>(covm.Device);
+			var device = _mapper.Map<Device>(model.Device);
 
-			var master = await _db.Masters.FindAsync(covm.Master.MasterId);
+			var master = await _db.Masters.FindAsync(model.Master.MasterId);
 
 			client.Devices.Add(device);
 			device.Master = master;
 			device.Client = client;
 			master.Devices.Add(device);
 
-			var order = _mapper.Map<Order>(covm.Order);
+			var order = _mapper.Map<Order>(model);
 
 			order.Client = client;
 			order.Device = device;

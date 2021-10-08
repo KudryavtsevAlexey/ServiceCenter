@@ -1,7 +1,7 @@
-﻿@model CompoundOrderViewModel
+﻿@model OrderViewModel
 <div class="container d-flex justify-content-center text-center">
 	<form asp-controller="Order" asp-action="EditOrder" method="post">
-		<input asp-for="@Model.Order.OrderId" hidden/>
+		<input asp-for="@Model.OrderId" hidden/>
 		<div>
 			<h3>Create order</h3>
 		</div>
@@ -41,7 +41,7 @@
 		</div>
 		<div class="mb-3 form-group">
 			<label asp-for="@Model.Device.ProblemDescription" class="form-label"></label>
-			<textarea asp-for="@Model.Device.ProblemDescription" class="form-control"><</textarea>
+		<textarea asp-for="@Model.Device.ProblemDescription" class="form-control"></textarea>
 			<span asp-validation-for="@Model.Device.ProblemDescription"></span>
 		</div>
 		<div class="mb-3 form-group">
@@ -62,16 +62,16 @@
 			<h4>Fill in information about order</h4>
 		</div>
 		<div class="mb-3 form-group">
-			<label asp-for="@Model.Order.AmountToPay" class="form-label"></label>
-			<input asp-for="@Model.Order.AmountToPay" class="form-control" />
-			<span asp-validation-for="@Model.Order.AmountToPay"></span>
+			<label asp-for="@Model.AmountToPay" class="form-label"></label>
+			<input asp-for="@Model.AmountToPay" class="form-control" />
+			<span asp-validation-for="@Model.AmountToPay"></span>
 		</div>
 		<div class="mb-3 form-group">
-			<label asp-for="@Model.Order.Status" class="form-label"></label>
-			<select asp-for="@Model.Order.Status" class="form-control" asp-items="Html.GetEnumSelectList<Status>()">
+			<label asp-for="@Model.Status" class="form-label"></label>
+			<select asp-for="@Model.Status" class="form-control" asp-items="Html.GetEnumSelectList<Status>()">
 				<option>Select status...</option>
 			</select>
-			<span asp-validation-for="@Model.Order.Status"></span>
+			<span asp-validation-for="@Model.Status"></span>
 		</div>
 		<div class="mb-3 form-group">
 			<button class="btn btn-primary" asp-controller="Order" asp-action="EditOrder" type="submit">Edit order</button>

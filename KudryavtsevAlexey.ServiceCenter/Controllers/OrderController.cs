@@ -32,19 +32,19 @@ namespace KudryavtsevAlexey.ServiceCenter.Controllers
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> CreateOrder(CompoundOrderViewModel covm)
+		public async Task<IActionResult> CreateOrder(OrderViewModel model)
 		{
 			if (!ModelState.IsValid)
 			{
-				return View(covm);
+				return View(model);
 			}
 
-			if (covm.Device.OnGuarantee)
+			if (model.Device.OnGuarantee)
 			{
-				covm.Order.AmountToPay = 0;
+				model.AmountToPay = 0;
 			}
 
-			await _orderService.MapOrder(covm);
+			await _orderService.MapOrder(model);
 
 			return RedirectToAction("ManageOrder", "Panel");
 		}
@@ -62,8 +62,8 @@ namespace KudryavtsevAlexey.ServiceCenter.Controllers
 
 			if (device!=null)
 			{
-				var dvm = _mapper.Map<DeviceViewModel>(device);
-				return View(dvm);
+				var deviceViewModel = _mapper.Map<DeviceViewModel>(device);
+				return View(deviceViewModel);
 			}
 
 			return NotFound();
@@ -84,39 +84,40 @@ namespace KudryavtsevAlexey.ServiceCenter.Controllers
 
 			if (order!=null)
 			{
-				var covm = new CompoundOrderViewModel 
+				var model = new OrderViewModel() 
 				{
 					Client = _mapper.Map<ClientViewModel>(order.Client),
 					Device = _mapper.Map<DeviceViewModel>(order.Device),
 					Master = _mapper.Map<MasterViewModel>(order.Master),
-					Order = _mapper.Map<OrderViewModel>(order),
+					AmountToPay = order.AmountToPay,
+					Status = order.Status,
 				};
 
 				ViewBag.Masters = await _masterService.GetAllMasters();
 
-				return View(covm);
+				return View(model);
 			}
 
 			return NotFound();
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> EditOrder(CompoundOrderViewModel covm)
+		public async Task<IActionResult> EditOrder(OrderViewModel model)
 		{
 			if (!ModelState.IsValid)
 			{
-				return View(covm);
+				return View(model);
 			}
 
-			if (covm.Device.OnGuarantee)
+			if (model.Device.OnGuarantee)
 			{
-				covm.Order.AmountToPay = 0;
+				model.AmountToPay = 0;
 			}
 
-			var orderToDelete = await _db.Orders.FindAsync(covm.Order.OrderId);
+			var orderToDelete = await _db.Orders.FindAsync(model.OrderId);
 			_db.Orders.Remove(orderToDelete);
 
-			await _orderService.MapOrder(covm);
+			await _orderService.MapOrder(model);
 
 			return RedirectToAction("ManageOrder", "Panel");
 		}
@@ -160,12 +161,13 @@ namespace KudryavtsevAlexey.ServiceCenter.Controllers
 
 			if (order!=null)
 			{
-				var orderStatus = _mapper.Map<CompoundOrderViewModel>(order);
+				var orderStatus = _mapper.Map<OrderViewModel>(order);
 
 				orderStatus.Client = _mapper.Map<ClientViewModel>(order.Client);
 				orderStatus.Device = _mapper.Map<DeviceViewModel>(order.Device);
 				orderStatus.Master = _mapper.Map<MasterViewModel>(order.Master);
-				orderStatus.Order = _mapper.Map<OrderViewModel>(order);
+				orderStatus.AmountToPay = order.AmountToPay;
+				orderStatus.Status = order.Status;
 
 				return View("ShowOrderStatus", orderStatus);
 			}

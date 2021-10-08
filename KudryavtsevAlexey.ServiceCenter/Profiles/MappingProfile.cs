@@ -16,7 +16,7 @@ namespace KudryavtsevAlexey.ServiceCenter.Profiles
 				.ReverseMap();
 			CreateMap<OrderViewModel, Order>()
 				.ReverseMap();
-			CreateMap<Order, CompoundOrderViewModel>();
+			CreateMap<Order, OrderViewModel>();
 		}
 	}
 }

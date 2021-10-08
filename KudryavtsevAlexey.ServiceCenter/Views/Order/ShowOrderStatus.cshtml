@@ -1,8 +1,8 @@
-﻿@model CompoundOrderViewModel
+﻿@model OrderViewModel
 <div class="container mt-5 text-center">
 	<div>
 		<h3 class="display-4 mb-3">
-			Order status: @EnumService.GetDescription(Model.Order.Status) <br> Amount to pay: @Model.Order.AmountToPay
+			Order status: @EnumService.GetDescription(Model.Status) <br> Amount to pay: @Model.AmountToPay
 		</h3>
 		<div class="mb-3">
 			Your email: @Model.Client.Email

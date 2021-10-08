@@ -5,6 +5,6 @@ namespace KudryavtsevAlexey.ServiceCenter.Services
 {
 	public interface IOrderService
 	{
-		public Task MapOrder(CompoundOrderViewModel covm);
+		public Task MapOrder(OrderViewModel model);
 	}
 }

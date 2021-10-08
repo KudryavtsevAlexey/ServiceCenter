@@ -1,4 +1,4 @@
-﻿@model ClientIdentificationViewModel
+﻿@model ClientViewModel
 <div class="container d-flex justify-content-center text-center mt-5">
 	<div>
 		<div>
@@ -9,19 +9,19 @@
 		<form asp-controller="Order" asp-action="CheckOrderStatus" method="post">
 			<div asp-validation-summary="ModelOnly"></div>
 			<div class="mb-3 form-group">
-				<label asp-for="ClientFirstName" class="form-label"></label>
-				<input asp-for="ClientFirstName" class="form-control" />
-				<span asp-validation-for="ClientFirstName"></span>
+				<label asp-for="FirstName" class="form-label"></label>
+				<input asp-for="FirstName" class="form-control" />
+				<span asp-validation-for="FirstName"></span>
 			</div>
 			<div class="mb-3 form-group">
-				<label asp-for="ClientLastName" class="form-label"></label>
-				<input asp-for="ClientLastName" class="form-control" />
-				<span asp-validation-for="ClientLastName"></span>
+				<label asp-for="LastName" class="form-label"></label>
+				<input asp-for="LastName" class="form-control" />
+				<span asp-validation-for="LastName"></span>
 			</div>
 			<div class="mb-3 form-group">
-				<label asp-for="CLientEmail" class="form-label"></label>
-				<input asp-for="CLientEmail" class="form-control" />
-				<span asp-validation-for="CLientEmail"></span>
+				<label asp-for="Email" class="form-label"></label>
+				<input asp-for="Email" class="form-control" />
+				<span asp-validation-for="Email"></span>
 			</div>
 			<div class="mb-3 form-group">
 				<button class="btn btn-primary" type="submit" asp-controller="Order" asp-action="CheckOrderStatus">
