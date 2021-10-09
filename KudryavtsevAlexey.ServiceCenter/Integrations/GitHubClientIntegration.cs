@@ -10,7 +10,8 @@ namespace KudryavtsevAlexey.ServiceCenter.Integrations
 		{
 			var client = new GitHubClient(new ProductHeaderValue("ServiceCenter"));
 
-			var tokenAuth = new Credentials("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");
+			var tokenAuth = new Credentials("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");
+
 			client.Credentials = tokenAuth;
 
 			return client;

@@ -2,6 +2,7 @@ using KudryavtsevAlexey.ServiceCenter.Data;
 using KudryavtsevAlexey.ServiceCenter.Integrations;
 using KudryavtsevAlexey.ServiceCenter.Profiles;
 using KudryavtsevAlexey.ServiceCenter.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -9,7 +10,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
+using System.Text;
 
 namespace KudryavtsevAlexey.ServiceCenter
 {
@@ -46,6 +49,19 @@ namespace KudryavtsevAlexey.ServiceCenter
 				config.AccessDeniedPath = "/Account/AccessDenied";
 			});
 
+			var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("secret_for_generate_jwt_token"));
+			services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+				.AddJwtBearer(config=> 
+				{
+					config.TokenValidationParameters = new TokenValidationParameters() 
+					{
+						ValidateIssuerSigningKey = true,
+						IssuerSigningKey = key,
+						ValidateAudience = false,
+						ValidateIssuer = false,
+					};
+				});
+
 			services.AddAuthorization(config=>
 			{
 				config.AddPolicy("Administrator", builder =>
@@ -72,6 +88,7 @@ namespace KudryavtsevAlexey.ServiceCenter
 			services.AddScoped<IMasterService, MasterService>();
 			services.AddScoped<IOrderService, OrderService>();
 			services.AddScoped<IGitHubClientIntegration, GitHubClientIntegration>();
+			services.AddScoped<IJwtService, JwtService>();
 		}
 
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
