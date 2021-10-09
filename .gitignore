@@ -5,9 +5,6 @@
 .idea
 global.json
 
-## wwwroot
-/KudryavtsevAlexey.ServiceCenter/wwwroot/twitter-bootstrap/
-/KudryavtsevAlexey.ServiceCenter/wwwroot/css/
 ###################
 # compiled source #
 ###################
