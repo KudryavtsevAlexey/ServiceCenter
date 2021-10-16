@@ -2,6 +2,7 @@
 using KudryavtsevAlexey.ServiceCenter.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -26,28 +27,22 @@ namespace KudryavtsevAlexey.ServiceCenter.Controllers
 		[HttpPost]
 		public async Task<IActionResult> Login(LoginViewModel lvm)
 		{
-			if (!ModelState.IsValid)
+			if (ModelState.IsValid)
 			{
-				return View(lvm);
+				var user = await _userManager.FindByEmailAsync(lvm.Email);
+
+				if (user != null)
+				{
+					var result = await _signInManager.PasswordSignInAsync(user, lvm.Password, true, false);
+
+					if (result.Succeeded)
+					{
+						return RedirectToAction("Index", "Home");
+					}
+				}
 			}
 
-			var user = await _userManager.FindByEmailAsync(lvm.Email);
-
-			if (user == null)
-			{
-				ModelState.AddModelError("", "User was not found");
-				return View(lvm);
-			}
-
-			var result = await _signInManager.PasswordSignInAsync(user, lvm.Password, true, false);
-
-			if (!result.Succeeded)
-			{
-				ModelState.AddModelError("", "Failed login attempt");
-				return View(lvm);
-			}
-
-			return RedirectToAction("Index", "Home");
+			return View(lvm);
 		}
 
 		public IActionResult Register()
@@ -60,6 +55,14 @@ namespace KudryavtsevAlexey.ServiceCenter.Controllers
 		{
 			if (!ModelState.IsValid)
 			{
+				var errors = new List<string>();
+				foreach (var state in ModelState)
+				{
+					foreach (var error in state.Value.Errors)
+					{
+						errors.Add(error.ErrorMessage);
+					}
+				}
 				return View(rvm);
 			}
 

@@ -1,12 +1,8 @@
 ﻿using AutoMapper;
 using KudryavtsevAlexey.ServiceCenter.Data;
-using KudryavtsevAlexey.ServiceCenter.Models;
-using KudryavtsevAlexey.ServiceCenter.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace KudryavtsevAlexey.ServiceCenter.Controllers

@@ -5,6 +5,7 @@ using KudryavtsevAlexey.ServiceCenter.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace KudryavtsevAlexey.ServiceCenter.Controllers
@@ -36,6 +37,14 @@ namespace KudryavtsevAlexey.ServiceCenter.Controllers
 		{
 			if (!ModelState.IsValid)
 			{
+				var errors = new List<string>();
+				foreach (var state in ModelState)
+				{
+					foreach (var error in state.Value.Errors)
+					{
+						errors.Add(error.ErrorMessage);
+					}
+				}
 				return View(model);
 			}
 
@@ -106,6 +115,14 @@ namespace KudryavtsevAlexey.ServiceCenter.Controllers
 		{
 			if (!ModelState.IsValid)
 			{
+				var errors = new List<string>();
+				foreach (var state in ModelState)
+				{
+					foreach (var error in state.Value.Errors)
+					{
+						errors.Add(error.ErrorMessage);
+					}
+				}
 				return View(model);
 			}
 
@@ -153,13 +170,13 @@ namespace KudryavtsevAlexey.ServiceCenter.Controllers
 
 			var order = await _db.Orders
 				.Include(o => o.Client)
-				.Include(o=>o.Device)
-				.Include(o=>o.Master)
+				.Include(o => o.Device)
+				.Include(o => o.Master)
 				.FirstOrDefaultAsync(o => o.Client.Email == client.Email
-				&& o.Client.FirstName.ToLower() == client.FirstName.ToLower()
-				&& o.Client.LastName.ToLower() == client.LastName.ToLower());
+				                          && o.Client.FirstName.ToLower() == client.FirstName.ToLower()
+				                          && o.Client.LastName.ToLower() == client.LastName.ToLower());
 
-			if (order!=null)
+			if (order != null)
 			{
 				var orderStatus = _mapper.Map<OrderViewModel>(order);
 
@@ -171,6 +188,7 @@ namespace KudryavtsevAlexey.ServiceCenter.Controllers
 
 				return View("ShowOrderStatus", orderStatus);
 			}
+
 			return View(client);
 		}
 	}
