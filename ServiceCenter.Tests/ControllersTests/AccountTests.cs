@@ -1,5 +1,4 @@
-﻿using AutoFixture;
-using KudryavtsevAlexey.ServiceCenter.Controllers;
+﻿using KudryavtsevAlexey.ServiceCenter.Controllers;
 using KudryavtsevAlexey.ServiceCenter.Data;
 using KudryavtsevAlexey.ServiceCenter.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -21,137 +20,129 @@ namespace ServiceCenter.Tests.ControllersTests
 			_signInManager = new Mock<FakeSignInManager>();
 		}
 
+
 		[Fact]
-		public async Task IndexPost_ReturnModelBackToView_WhenModelStateIsInvalid()
+		public async Task LoginPost_ShouldReturnModelBackToView_WhenModelStateIsInvalid()
 		{
 			// arrange
-			var loginViewModelFixture = new Fixture();
-			var loginViewModel = loginViewModelFixture.Create<LoginViewModel>();
-			loginViewModel.Email += "@mail.ru";
-			var controller = new AccountController(_userManager.Object, _signInManager.Object);
-			controller.ModelState.AddModelError("", "Model state error");
+			var loginViewModel = new LoginViewModel()
+			{
+				Email = "ExpectedEmail@test.com",
+			};
 
+			var controller = new AccountController(_userManager.Object, _signInManager.Object);
+
+			controller.ModelState.AddModelError("Error", "Model state error");
 			// act
 			var result = await controller.Login(loginViewModel);
 
 			// assert
 			Assert.False(controller.ModelState.IsValid);
+
 			var viewResult = Assert.IsType<ViewResult>(result);
+
+			Assert.IsAssignableFrom<LoginViewModel>(viewResult.ViewData.Model);
+		}
+
+
+		[Fact]
+		public async Task LoginPost_ShouldReturnModelBackToView_WhenUserNotFound()
+		{
+			// arrange
+			var loginViewModel = new LoginViewModel() {
+				Email = "ExpectedEmail@test.com",
+			};
+
+			_userManager.Setup(u => u.FindByEmailAsync(loginViewModel.Email))
+				.ReturnsAsync((ApplicationUser)null);
+
+			var controller = new AccountController(_userManager.Object, _signInManager.Object);
+
+			// act
+			var result = await controller.Login(loginViewModel);
+
+			// assert
+			Assert.True(controller.ModelState.IsValid);
+
+			var viewResult = Assert.IsType<ViewResult>(result);
+
 			Assert.IsAssignableFrom<LoginViewModel>(viewResult.ViewData.Model);
 		}
 
 		[Fact]
-		public void IndexPost_ContinuesAuthorization_WhenModelStateIsValid()
+		public async Task LoginPost_ShouldReturnModelBackToView_WhenPasswordsMismatch()
 		{
 			// arrange
-			var loginViewModelFixture = new Fixture();
-			var loginViewModel = loginViewModelFixture.Create<LoginViewModel>();
-			loginViewModel.Email += "@mail.ru";
-			var controller = new AccountController(_userManager.Object, _signInManager.Object);
+			var user = new ApplicationUser()
+			{
+				PasswordHash = UserManagerHelper.GetApplicationUser().Password
+			};
 
-			// act
-
-			// assert
-			Assert.True(controller.ModelState.IsValid);
-		}
-
-		[Fact]
-		public void IndexPost_UserShouldNotBeFound_WhenEmailsDoesNotMatches()
-		{
-			// arrange
 			var loginViewModel = new LoginViewModel() 
 			{
-				Email = "ExpectedEmail@mail.ru",
-				Password = "ExpectedPassword123",
+				Email = "ExpectedEmail@test.com",
+				Password = "ExpectedPassword123"
 			};
-			
-			var actualEmail = "ActualEmail@mail.ru";
-			ApplicationUser user = null;
+
+			_userManager.Setup(m => m.FindByEmailAsync(loginViewModel.Email))
+				.ReturnsAsync(new ApplicationUser());
+
+			 _signInManager.Setup(m => m.PasswordSignInAsync(
+				user, loginViewModel.Password, It.IsAny<bool>(), It.IsAny<bool>()))
+				.ReturnsAsync(new FakeSignInResult(false));
+
 			var controller = new AccountController(_userManager.Object, _signInManager.Object);
 
 			// act
-			var result = controller.Login(loginViewModel);
+			var result = await controller.Login(loginViewModel);
 
 			// assert
 			Assert.True(controller.ModelState.IsValid);
-			Assert.NotEqual(actualEmail, loginViewModel.Email);
-			Assert.Null(user);
+
+			Assert.NotEqual(user.PasswordHash, loginViewModel.Password);
+
+			var viewResult = Assert.IsType<ViewResult>(result);
+
+			Assert.IsAssignableFrom<LoginViewModel>(viewResult.ViewData.Model);
 		}
 
 		[Fact]
-		public void IndexPost_UserShouldBeFound_WhenEmailsMatches()
+		public async Task LoginPost_ShouldReturnModelBackToView_WhenPasswordsMatch()
 		{
 			// arrange
-			var loginViewModel = new LoginViewModel() {
-				Email = "ExpectedEmail@mail.ru",
-				Password = "ExpectedPassword123",
+			var user = new ApplicationUser()
+			{
+				PasswordHash = UserManagerHelper.GetApplicationUser().Password
 			};
 
-			var actualEmail = "ExpectedEmail@mail.ru";
-			var user = new FakeApplicationUser() 
+			var loginViewModel = new LoginViewModel()
 			{
-				Email = "ExpectedEmail@mail.ru",
+				Email = "ExpectedEmail@test.com",
+				Password = "ExpectedPassword1234"
 			};
+
+			_userManager.Setup(m => m.FindByEmailAsync(loginViewModel.Email))
+				.ReturnsAsync(user);
+
+			_signInManager.Setup(m => m.PasswordSignInAsync(
+			   user, loginViewModel.Password, It.IsAny<bool>(), It.IsAny<bool>()))
+			   .ReturnsAsync(new FakeSignInResult(true));
+
 			var controller = new AccountController(_userManager.Object, _signInManager.Object);
 
 			// act
-			var result = controller.Login(loginViewModel);
+			var result = await controller.Login(loginViewModel);
 
 			// assert
 			Assert.True(controller.ModelState.IsValid);
-			Assert.Equal(actualEmail, loginViewModel.Email);
-			Assert.NotNull(user);
-		}
 
-		[Fact]
-		public void IndexPost_UserShouldNotBeAuthorized_WhenPasswordsDoesNotMathes()
-		{
-			// arrange
-			var loginViewModel = new LoginViewModel() 
-			{
-				Email = "ExpectedEmail@mail.ru",
-				Password = "ExpectedPassword123",
-			};
+			Assert.Equal(user.PasswordHash, loginViewModel.Password);
 
-			var user = new FakeApplicationUser() 
-			{
-				Email = "ExpectedEmail@mail.ru",
-				Password = "ActualPassword123",
-			};
-			var controller = new AccountController(_userManager.Object, _signInManager.Object);
+			var viewResult = Assert.IsType<RedirectToActionResult>(result);
 
-			// act
-			var result = controller.Login(loginViewModel);
+			Assert.Equal("Home", viewResult.ControllerName);
 
-			// assert
-			Assert.NotEqual(user.Password, loginViewModel.Email);
-			Assert.NotNull(user);
-		}
-
-		[Fact]
-		public void IndexPost_UserShouldBeAuthorized_WhenPasswordsMathes()
-		{
-			// arrange
-			var loginViewModel = new LoginViewModel() {
-				Email = "ExpectedEmail@mail.ru",
-				Password = "ExpectedPassword123",
-			};
-
-			var user = new FakeApplicationUser() {
-				Email = "ExpectedEmail@mail.ru",
-				Password = "ExpectedPassword123",
-			};
-			var controller = new AccountController(_userManager.Object, _signInManager.Object);
-
-			// act
-			var result = controller.Login(loginViewModel);
-			var redirectResult = controller.RedirectToAction("Index", "Home");
-
-			// assert
-			Assert.Equal(user.Password, loginViewModel.Password);
-			var redirectToActionResult = Assert.IsType<RedirectToActionResult>(redirectResult);
-			Assert.Equal("Home", redirectToActionResult.ControllerName);
-			Assert.Equal("Index", redirectToActionResult.ActionName);
+			Assert.Equal("Index", viewResult.ActionName);
 		}
 	}
 }

@@ -2,7 +2,6 @@
 using KudryavtsevAlexey.ServiceCenter.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -33,7 +32,7 @@ namespace KudryavtsevAlexey.ServiceCenter.Controllers
 
 				if (user != null)
 				{
-					var result = await _signInManager.PasswordSignInAsync(user, lvm.Password, true, false);
+					var result = await _signInManager.PasswordSignInAsync(user, lvm.Password, false, false);
 
 					if (result.Succeeded)
 					{
@@ -53,44 +52,31 @@ namespace KudryavtsevAlexey.ServiceCenter.Controllers
 		[HttpPost]
 		public async Task<IActionResult> Register(RegisterViewModel rvm)
 		{
-			if (!ModelState.IsValid)
+			if (ModelState.IsValid)
 			{
-				var errors = new List<string>();
-				foreach (var state in ModelState)
+				var user = new ApplicationUser
 				{
-					foreach (var error in state.Value.Errors)
+					UserName = rvm.FirstName + rvm.LastName,
+					FirstName = rvm.FirstName,
+					LastName = rvm.LastName,
+					Email = rvm.Email,
+				};
+
+				var identityResult = await _userManager.CreateAsync(user, rvm.Password);
+
+				if (identityResult.Succeeded)
+				{
+					await _userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "Client"));
+					var signInResult = await _signInManager.PasswordSignInAsync(user, rvm.Password, true, false);
+
+					if (signInResult.Succeeded)
 					{
-						errors.Add(error.ErrorMessage);
+						return RedirectToAction("Index", "Home");
 					}
 				}
-				return View(rvm);
 			}
 
-			var user = new ApplicationUser {
-				UserName = rvm.FirstName + rvm.LastName,
-				FirstName = rvm.FirstName,
-				LastName = rvm.LastName,
-				Email = rvm.Email,
-			};
-
-			var identityResult = await _userManager.CreateAsync(user, rvm.Password);
-
-			if (!identityResult.Succeeded)
-			{
-				foreach (var error in identityResult.Errors)
-				{
-					ModelState.AddModelError("", error.Description);
-				}
-			}
-
-			await _userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "Client"));
-			var signInResult = await _signInManager.PasswordSignInAsync(user, rvm.Password, true, false);
-
-			if (!signInResult.Succeeded)
-			{
-				return View(rvm);
-			}
-			return RedirectToAction("Index", "Home");
+			return View(rvm);
 		}
 
 		public async Task<IActionResult> Logout()

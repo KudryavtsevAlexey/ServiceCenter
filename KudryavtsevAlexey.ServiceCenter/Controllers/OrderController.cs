@@ -5,7 +5,6 @@ using KudryavtsevAlexey.ServiceCenter.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace KudryavtsevAlexey.ServiceCenter.Controllers
@@ -35,44 +34,34 @@ namespace KudryavtsevAlexey.ServiceCenter.Controllers
 		[HttpPost]
 		public async Task<IActionResult> CreateOrder(OrderViewModel model)
 		{
-			if (!ModelState.IsValid)
+			if (ModelState.IsValid)
 			{
-				var errors = new List<string>();
-				foreach (var state in ModelState)
+				if (model.Device.OnGuarantee)
 				{
-					foreach (var error in state.Value.Errors)
-					{
-						errors.Add(error.ErrorMessage);
-					}
+					model.AmountToPay = 0;
 				}
-				return View(model);
+
+				await _orderService.MapOrder(model);
+
+				return RedirectToAction("ManageOrder", "Panel");
 			}
 
-			if (model.Device.OnGuarantee)
-			{
-				model.AmountToPay = 0;
-			}
-
-			await _orderService.MapOrder(model);
-
-			return RedirectToAction("ManageOrder", "Panel");
+			return View(model);
 		}
 
 		public async Task<IActionResult> MoreDetails(int? id)
 		{
-			if (id==null)
+			if (id != null)
 			{
-				return NotFound();
-			}
-
-			var device = await _db.Devices
+				var device = await _db.Devices
 				.FirstOrDefaultAsync(d => d.Order.OrderId == id);
-				
 
-			if (device!=null)
-			{
-				var deviceViewModel = _mapper.Map<DeviceViewModel>(device);
-				return View(deviceViewModel);
+
+				if (device != null)
+				{
+					var deviceViewModel = _mapper.Map<DeviceViewModel>(device);
+					return View(deviceViewModel);
+				}
 			}
 
 			return NotFound();
@@ -80,31 +69,29 @@ namespace KudryavtsevAlexey.ServiceCenter.Controllers
 
 		public async Task<IActionResult> EditOrder(int? id)
 		{
-			if (id == null)
+			if (id != null)
 			{
-				return NotFound();
-			}
+				var order = await _db.Orders
+				.Include(o => o.Client)
+				.Include(o => o.Device)
+				.Include(o => o.Master)
+				.FirstOrDefaultAsync(o => o.OrderId == id);
 
-			var order = await _db.Orders
-				.Include(o=>o.Client)
-				.Include(o=>o.Device)
-				.Include(o=>o.Master)
-				.FirstOrDefaultAsync(o=>o.OrderId == id);
-
-			if (order!=null)
-			{
-				var model = new OrderViewModel() 
+				if (order != null)
 				{
-					Client = _mapper.Map<ClientViewModel>(order.Client),
-					Device = _mapper.Map<DeviceViewModel>(order.Device),
-					Master = _mapper.Map<MasterViewModel>(order.Master),
-					AmountToPay = order.AmountToPay,
-					Status = order.Status,
-				};
+					var model = new OrderViewModel()
+					{
+						Client = _mapper.Map<ClientViewModel>(order.Client),
+						Device = _mapper.Map<DeviceViewModel>(order.Device),
+						Master = _mapper.Map<MasterViewModel>(order.Master),
+						AmountToPay = order.AmountToPay,
+						Status = order.Status,
+					};
 
-				ViewBag.Masters = await _masterService.GetAllMasters();
+					ViewBag.Masters = await _masterService.GetAllMasters();
 
-				return View(model);
+					return View(model);
+				}
 			}
 
 			return NotFound();
@@ -113,45 +100,36 @@ namespace KudryavtsevAlexey.ServiceCenter.Controllers
 		[HttpPost]
 		public async Task<IActionResult> EditOrder(OrderViewModel model)
 		{
-			if (!ModelState.IsValid)
+			if (ModelState.IsValid)
 			{
-				var errors = new List<string>();
-				foreach (var state in ModelState)
+				if (model.Device.OnGuarantee)
 				{
-					foreach (var error in state.Value.Errors)
-					{
-						errors.Add(error.ErrorMessage);
-					}
+					model.AmountToPay = 0;
 				}
-				return View(model);
+
+				var orderToDelete = await _db.Orders.FindAsync(model.OrderId);
+				_db.Orders.Remove(orderToDelete);
+
+				await _orderService.MapOrder(model);
+
+				return RedirectToAction("ManageOrder", "Panel");
 			}
-
-			if (model.Device.OnGuarantee)
-			{
-				model.AmountToPay = 0;
-			}
-
-			var orderToDelete = await _db.Orders.FindAsync(model.OrderId);
-			_db.Orders.Remove(orderToDelete);
-
-			await _orderService.MapOrder(model);
-
-			return RedirectToAction("ManageOrder", "Panel");
+			return View(model);
 		}
 
 		public async Task<IActionResult> DeleteOrder(int? id)
 		{
-			if (id==null)
+			if (id != null)
 			{
-				return NotFound();
+				var order = await _db.Orders.FindAsync(id);
+
+				_db.Remove(order);
+				await _db.SaveChangesAsync();
+
+				return RedirectToAction("ManageOrder", "Panel");
 			}
 
-			var order = await _db.Orders.FindAsync(id);
-
-			_db.Remove(order);
-			await _db.SaveChangesAsync();
-
-			return RedirectToAction("ManageOrder", "Panel");
+			return NotFound();
 		}
 
 		[AllowAnonymous]
@@ -163,30 +141,28 @@ namespace KudryavtsevAlexey.ServiceCenter.Controllers
 		[HttpPost, AllowAnonymous]
 		public async Task<IActionResult> CheckOrderStatusAsync(ClientViewModel client)
 		{
-			if (client == null)
+			if (client != null)
 			{
-				return NotFound();
-			}
-
-			var order = await _db.Orders
+				var order = await _db.Orders
 				.Include(o => o.Client)
 				.Include(o => o.Device)
 				.Include(o => o.Master)
 				.FirstOrDefaultAsync(o => o.Client.Email == client.Email
-				                          && o.Client.FirstName.ToLower() == client.FirstName.ToLower()
-				                          && o.Client.LastName.ToLower() == client.LastName.ToLower());
+										  && o.Client.FirstName.ToLower() == client.FirstName.ToLower()
+										  && o.Client.LastName.ToLower() == client.LastName.ToLower());
 
-			if (order != null)
-			{
-				var orderStatus = _mapper.Map<OrderViewModel>(order);
+				if (order != null)
+				{
+					var orderStatus = _mapper.Map<OrderViewModel>(order);
 
-				orderStatus.Client = _mapper.Map<ClientViewModel>(order.Client);
-				orderStatus.Device = _mapper.Map<DeviceViewModel>(order.Device);
-				orderStatus.Master = _mapper.Map<MasterViewModel>(order.Master);
-				orderStatus.AmountToPay = order.AmountToPay;
-				orderStatus.Status = order.Status;
+					orderStatus.Client = _mapper.Map<ClientViewModel>(order.Client);
+					orderStatus.Device = _mapper.Map<DeviceViewModel>(order.Device);
+					orderStatus.Master = _mapper.Map<MasterViewModel>(order.Master);
+					orderStatus.AmountToPay = order.AmountToPay;
+					orderStatus.Status = order.Status;
 
-				return View("ShowOrderStatus", orderStatus);
+					return View("ShowOrderStatus", orderStatus);
+				}
 			}
 
 			return View(client);
