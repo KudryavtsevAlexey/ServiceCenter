@@ -67,7 +67,7 @@ namespace KudryavtsevAlexey.ServiceCenter.Controllers
 				if (identityResult.Succeeded)
 				{
 					await _userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "Client"));
-					var signInResult = await _signInManager.PasswordSignInAsync(user, rvm.Password, true, false);
+					var signInResult = await _signInManager.PasswordSignInAsync(user, rvm.Password, false, false);
 
 					if (signInResult.Succeeded)
 					{
@@ -84,6 +84,5 @@ namespace KudryavtsevAlexey.ServiceCenter.Controllers
 			await _signInManager.SignOutAsync();
 			return RedirectToAction("Index", "Home");
 		}
-
 	}
 }

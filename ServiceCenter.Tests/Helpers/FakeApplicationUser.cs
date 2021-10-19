@@ -1,8 +1,9 @@
-﻿namespace ServiceCenter.Tests.Helpers
+﻿using KudryavtsevAlexey.ServiceCenter.Data;
+
+namespace ServiceCenter.Tests.Helpers
 {
-	public class FakeApplicationUser
+	public class FakeApplicationUser : ApplicationUser
     {
-		public string Email { get; set; }
 		public string Password { get; set; }
 	}
 }

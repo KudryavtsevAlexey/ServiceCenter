@@ -166,6 +166,25 @@
           "lib/net5.0/Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll": {}
         }
       },
+      "Microsoft.AspNetCore.Identity.Specification.Tests/5.0.11": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration": "5.0.0",
+          "Microsoft.Extensions.DependencyInjection": "5.0.2",
+          "Microsoft.Extensions.Logging": "5.0.0",
+          "xunit.assert": "2.4.1",
+          "xunit.extensibility.core": "2.4.1"
+        },
+        "compile": {
+          "lib/net5.0/Microsoft.AspNetCore.Identity.Specification.Tests.dll": {}
+        },
+        "runtime": {
+          "lib/net5.0/Microsoft.AspNetCore.Identity.Specification.Tests.dll": {}
+        },
+        "frameworkReferences": [
+          "Microsoft.AspNetCore.App"
+        ]
+      },
       "Microsoft.AspNetCore.Mvc.Razor.Extensions/5.0.10": {
         "type": "package",
         "dependencies": {
@@ -514,6 +533,19 @@
         },
         "runtime": {
           "lib/netstandard2.0/Microsoft.Extensions.Caching.Memory.dll": {}
+        }
+      },
+      "Microsoft.Extensions.Configuration/5.0.0": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration.Abstractions": "5.0.0",
+          "Microsoft.Extensions.Primitives": "5.0.0"
+        },
+        "compile": {
+          "lib/netstandard2.0/Microsoft.Extensions.Configuration.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/Microsoft.Extensions.Configuration.dll": {}
         }
       },
       "Microsoft.Extensions.Configuration.Abstractions/5.0.0": {
@@ -3000,6 +3032,20 @@
         "microsoft.aspnetcore.identity.entityframeworkcore.nuspec"
       ]
     },
+    "Microsoft.AspNetCore.Identity.Specification.Tests/5.0.11": {
+      "sha512": "hS7HybFJU5uxREPVcy3Y2bdGG4F4vkHLLtAWvuSigbQlW4R0/TrSA9a0pANPZXn/poq6Wk2MtSh2/k5DclCX+Q==",
+      "type": "package",
+      "path": "microsoft.aspnetcore.identity.specification.tests/5.0.11",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/net5.0/Microsoft.AspNetCore.Identity.Specification.Tests.dll",
+        "microsoft.aspnetcore.identity.specification.tests.5.0.11.nupkg.sha512",
+        "microsoft.aspnetcore.identity.specification.tests.nuspec"
+      ]
+    },
     "Microsoft.AspNetCore.Mvc.Razor.Extensions/5.0.10": {
       "sha512": "cerFq1Dyff2CuSO3XiMYwjkuP/IC5X4L+vjt20+Dq8CSLtVa84+uFcNOcwuR8/ktJg0yIF5JfGz2/TkDQC9JhA==",
       "type": "package",
@@ -3611,6 +3657,26 @@
         "lib/netstandard2.0/Microsoft.Extensions.Caching.Memory.xml",
         "microsoft.extensions.caching.memory.5.0.0.nupkg.sha512",
         "microsoft.extensions.caching.memory.nuspec",
+        "useSharedDesignerContext.txt",
+        "version.txt"
+      ]
+    },
+    "Microsoft.Extensions.Configuration/5.0.0": {
+      "sha512": "LN322qEKHjuVEhhXueTUe7RNePooZmS8aGid5aK2woX3NPjSnONFyKUc6+JknOS6ce6h2tCLfKPTBXE3mN/6Ag==",
+      "type": "package",
+      "path": "microsoft.extensions.configuration/5.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE.TXT",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/net461/Microsoft.Extensions.Configuration.dll",
+        "lib/net461/Microsoft.Extensions.Configuration.xml",
+        "lib/netstandard2.0/Microsoft.Extensions.Configuration.dll",
+        "lib/netstandard2.0/Microsoft.Extensions.Configuration.xml",
+        "microsoft.extensions.configuration.5.0.0.nupkg.sha512",
+        "microsoft.extensions.configuration.nuspec",
         "useSharedDesignerContext.txt",
         "version.txt"
       ]
@@ -9212,6 +9278,7 @@
     "net5.0": [
       "AutoFixture >= 4.17.0",
       "KudryavtsevAlexey.ServiceCenter >= 1.0.0",
+      "Microsoft.AspNetCore.Identity.Specification.Tests >= 5.0.11",
       "Microsoft.NET.Test.Sdk >= 16.11.0",
       "Moq >= 4.16.1",
       "coverlet.collector >= 3.1.0",
@@ -9270,6 +9337,10 @@
           "AutoFixture": {
             "target": "Package",
             "version": "[4.17.0, )"
+          },
+          "Microsoft.AspNetCore.Identity.Specification.Tests": {
+            "target": "Package",
+            "version": "[5.0.11, )"
           },
           "Microsoft.NET.Test.Sdk": {
             "target": "Package",
