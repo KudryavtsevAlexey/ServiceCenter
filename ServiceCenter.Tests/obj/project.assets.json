@@ -9278,6 +9278,7 @@
     "net5.0": [
       "AutoFixture >= 4.17.0",
       "KudryavtsevAlexey.ServiceCenter >= 1.0.0",
+      "Microsoft.AspNetCore.Identity.EntityFrameworkCore >= 5.0.10",
       "Microsoft.AspNetCore.Identity.Specification.Tests >= 5.0.11",
       "Microsoft.NET.Test.Sdk >= 16.11.0",
       "Moq >= 4.16.1",
@@ -9337,6 +9338,10 @@
           "AutoFixture": {
             "target": "Package",
             "version": "[4.17.0, )"
+          },
+          "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+            "target": "Package",
+            "version": "[5.0.10, )"
           },
           "Microsoft.AspNetCore.Identity.Specification.Tests": {
             "target": "Package",

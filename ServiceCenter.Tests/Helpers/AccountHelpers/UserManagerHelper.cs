@@ -1,6 +1,8 @@
-﻿namespace ServiceCenter.Tests.Helpers
+﻿using ServiceCenter.Tests.Helpers.AccountHelpers;
+
+namespace ServiceCenter.Tests.Helpers.AccountHeplers
 {
-	public class UserManagerHelper
+    public class UserManagerHelper
 {
         public static FakeApplicationUser GetApplicationUser()
 {

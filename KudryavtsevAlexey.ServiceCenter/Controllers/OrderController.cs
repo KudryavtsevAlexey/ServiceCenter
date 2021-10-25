@@ -9,15 +9,15 @@ using System.Threading.Tasks;
 
 namespace KudryavtsevAlexey.ServiceCenter.Controllers
 {
-	[Authorize(Policy ="Master")]
+    [Authorize(Policy ="Master")]
 	public class OrderController : Controller
 	{
-		private readonly ApplicationContext _db;
+		private readonly IContext _db;
 		private readonly IMapper _mapper;
 		private readonly IMasterService _masterService;
 		private readonly IOrderService _orderService;
 
-		public OrderController(ApplicationContext db, IMapper mapper, IMasterService masterService, IOrderService orderService)
+		public OrderController(IContext db, IMapper mapper, IMasterService masterService, IOrderService orderService)
 		{
 			_db = db;
 			_mapper = mapper;
@@ -32,30 +32,34 @@ namespace KudryavtsevAlexey.ServiceCenter.Controllers
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> CreateOrder(OrderViewModel model)
+		public async Task<IActionResult> CreateOrder(OrderViewModel ovm)
 		{
 			if (ModelState.IsValid)
 			{
-				if (model.Device.OnGuarantee)
+				if (ovm.Device.OnGuarantee)
 				{
-					model.AmountToPay = 0;
+					ovm.AmountToPay = 0;
 				}
 
-				await _orderService.MapOrder(model);
+				var order = await _orderService.MapOrder(ovm);
+
+				await _db.Clients.AddAsync(order.Client);
+				await _db.Devices.AddAsync(order.Device);
+				await _db.Orders.AddAsync(order);
+
+				await _db.SaveChangesAsync();
 
 				return RedirectToAction("ManageOrder", "Panel");
 			}
 
-			return View(model);
+			return View(ovm);
 		}
 
 		public async Task<IActionResult> MoreDetails(int? id)
 		{
 			if (id != null)
 			{
-				var device = await _db.Devices
-				.FirstOrDefaultAsync(d => d.Order.OrderId == id);
-
+				var device = await _db.FirstOrDefaultDeviceAsyncWrapper(id);
 
 				if (device != null)
 				{
@@ -123,8 +127,8 @@ namespace KudryavtsevAlexey.ServiceCenter.Controllers
 			{
 				var order = await _db.Orders.FindAsync(id);
 
-				_db.Remove(order);
-				await _db.SaveChangesAsync();
+				_db.Orders.Remove(order);
+				await ((ApplicationContext)_db).SaveChangesAsync();
 
 				return RedirectToAction("ManageOrder", "Panel");
 			}

@@ -1,10 +1,12 @@
 ﻿using KudryavtsevAlexey.ServiceCenter.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
+using System.Linq;
 
 namespace KudryavtsevAlexey.ServiceCenter.Data
 {
-	public class ApplicationContext : IdentityDbContext<ApplicationUser>
+    public class ApplicationContext : IdentityDbContext<ApplicationUser>, IContext
 	{
 		public ApplicationContext(DbContextOptions<ApplicationContext> options):base(options)
 		{
@@ -12,9 +14,19 @@ namespace KudryavtsevAlexey.ServiceCenter.Data
 		}
 
 		public DbSet<Client> Clients { get; set; }
-		public DbSet<Device> Devices { get; set; }
-		public DbSet<Master> Masters { get; set; }
-		public DbSet<Order> Orders { get; set; }
+        public DbSet<Device> Devices { get; set; }
+        public DbSet<Master> Masters { get; set; }
+        public DbSet<Order> Orders { get; set; }
+
+		public async Task<Device> FirstOrDefaultDeviceAsyncWrapper(int? id)
+		{
+			return await Devices.FirstOrDefaultAsync(d => d.DeviceId == id);
+		}
+
+		public async Task<int> SaveChangesAsync()
+        {
+			return 1;
+        }
 
 		protected override void OnModelCreating(ModelBuilder builder)
 		{
@@ -82,5 +94,5 @@ namespace KudryavtsevAlexey.ServiceCenter.Data
 
 			base.OnModelCreating(builder);
 		}
-	}
+    }
 }

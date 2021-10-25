@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 using Moq;
 using System;
 
-namespace ServiceCenter.Tests.Helpers
+namespace ServiceCenter.Tests.Helpers.AccountHeplers
 {
     public class FakeUserManager : UserManager<ApplicationUser>
     {

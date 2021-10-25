@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 
-namespace ServiceCenter.Tests.Helpers
+namespace ServiceCenter.Tests.Helpers.AccountHeplers
 {
 	public class FakeSignInManager : SignInManager<ApplicationUser>
     {

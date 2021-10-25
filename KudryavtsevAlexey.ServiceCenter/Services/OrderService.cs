@@ -6,18 +6,18 @@ using System.Threading.Tasks;
 
 namespace KudryavtsevAlexey.ServiceCenter.Services
 {
-	public class OrderService : IOrderService
+    public class OrderService : IOrderService
 	{
 		private readonly IMapper _mapper;
-		private readonly ApplicationContext _db;
+		private readonly IContext _db;
 
-		public OrderService(ApplicationContext db,IMapper mapper)
+		public OrderService(IContext db,IMapper mapper)
 		{
 			_mapper = mapper;
 			_db = db;
 		}
 
-		public async Task MapOrder(OrderViewModel model)
+		public async Task<Order> MapOrder(OrderViewModel model)
 		{
 			var client = _mapper.Map<Client>(model.Client);
 
@@ -40,11 +40,7 @@ namespace KudryavtsevAlexey.ServiceCenter.Services
 			device.Order = order;
 			master.Orders.Add(order);
 
-			await _db.Clients.AddAsync(client);
-			await _db.Devices.AddAsync(device);
-			await _db.Orders.AddAsync(order);
-
-			await _db.SaveChangesAsync();
+			return order;
 		}
 	}
 }

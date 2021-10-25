@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace ServiceCenter.Tests.Helpers
+namespace ServiceCenter.Tests.Helpers.AccountHeplers
 {
 	public class FakeIdentityResult : IdentityResult
     {

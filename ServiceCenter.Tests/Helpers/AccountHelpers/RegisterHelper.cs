@@ -1,6 +1,6 @@
 ﻿using KudryavtsevAlexey.ServiceCenter.ViewModels;
 
-namespace ServiceCenter.Tests.Helpers
+namespace ServiceCenter.Tests.Helpers.AccountHeplers
 {
 	public class RegisterHelper
     {
