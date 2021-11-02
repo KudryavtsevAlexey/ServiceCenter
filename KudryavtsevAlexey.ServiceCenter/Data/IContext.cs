@@ -4,14 +4,13 @@ using System.Threading.Tasks;
 
 namespace KudryavtsevAlexey.ServiceCenter.Data
 {
-    public interface IContext : IWrapper
+    public interface IContext
     {
         DbSet<Client> Clients { get; set; }
         DbSet<Device> Devices { get; set; }
         DbSet<Master> Masters { get; set; }
         DbSet<Order> Orders { get; set; }
 
-        int SaveChanges();
-        Task<int> SaveChangesAsync();
+        Task<int> CustomSaveChangesAsync();
     }
 }

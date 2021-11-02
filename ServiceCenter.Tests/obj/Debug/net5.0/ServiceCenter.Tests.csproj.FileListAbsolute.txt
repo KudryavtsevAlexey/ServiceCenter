@@ -463,3 +463,4 @@ C:\Users\Lenovo\source\repos\KudryavtsevAlexey.ServiceCenter\ServiceCenter.Tests
 C:\Users\Lenovo\source\repos\KudryavtsevAlexey.ServiceCenter\ServiceCenter.Tests\obj\Debug\net5.0\ServiceCenter.Tests.pdb
 C:\Users\Lenovo\source\repos\KudryavtsevAlexey.ServiceCenter\ServiceCenter.Tests\obj\Debug\net5.0\ServiceCenter.Tests.genruntimeconfig.cache
 C:\Users\Lenovo\source\repos\KudryavtsevAlexey.ServiceCenter\ServiceCenter.Tests\bin\Debug\net5.0\Microsoft.AspNetCore.Identity.Specification.Tests.dll
+C:\Users\Lenovo\source\repos\KudryavtsevAlexey.ServiceCenter\ServiceCenter.Tests\bin\Debug\net5.0\Microsoft.EntityFrameworkCore.InMemory.dll

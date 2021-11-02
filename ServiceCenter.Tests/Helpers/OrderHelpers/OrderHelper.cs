@@ -1,25 +1,31 @@
-﻿using AutoFixture;
+﻿using System.Collections.Generic;
 using KudryavtsevAlexey.ServiceCenter.Models;
 using KudryavtsevAlexey.ServiceCenter.ViewModels;
 using Moq;
 
-namespace ServiceCenter.Tests.Helpers.AccountHeplers
+using ServiceCenter.Tests.Helpers.DataHelpers;
+
+namespace ServiceCenter.Tests.Helpers.OrderHelpers
 {
     public class OrderHelper
     {
+        private static List<Client> clientsCopy = DataHelper.GetManyClients();
+        private static List<Device> devicesCopy = DataHelper.GetManyDevices();
+        private static List<Master> mastersCopy = DataHelper.GetManyMasters();
+
         public static OrderViewModel GetOrderViewModel()
 		{
-            var clientFixture = new Fixture();
-            var deviceFixture = new Fixture();
-            var masterFixture = new Fixture();
+            var client = ClientHelper.GetClientViewModel();
+            var device = DeviceHelper.GetDeviceViewModel();
+            var master = MasterHelper.GetMasterViewModel();
 
             var order = new OrderViewModel()
             {
                 OrderId = 1,
                 Status = It.IsAny<KudryavtsevAlexey.ServiceCenter.Enums.Status>(),
-                Client = clientFixture.Create<ClientViewModel>(),
-                Device = deviceFixture.Create<DeviceViewModel>(),
-                Master = masterFixture.Create<MasterViewModel>(),
+                Client = client,
+                Device = device,
+                Master = master,
             };
 
             order.AmountToPay = order.Device.OnGuarantee ? 0 : It.IsAny<int>();
@@ -63,7 +69,7 @@ namespace ServiceCenter.Tests.Helpers.AccountHeplers
 
         public static Order MapOrder(Client client, Device device, Master master)
         {
-            var order =  new Order()
+            var order = new Order()
             {
                 OrderId = It.IsAny<int>(),
                 Client = client,
@@ -94,6 +100,5 @@ namespace ServiceCenter.Tests.Helpers.AccountHeplers
 
             return order;
         }
-
     }
 }

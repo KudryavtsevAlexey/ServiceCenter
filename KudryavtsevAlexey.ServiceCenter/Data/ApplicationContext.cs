@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
-using System.Linq;
 
 namespace KudryavtsevAlexey.ServiceCenter.Data
 {
@@ -14,25 +13,17 @@ namespace KudryavtsevAlexey.ServiceCenter.Data
 		}
 
 		public DbSet<Client> Clients { get; set; }
-        public DbSet<Device> Devices { get; set; }
-        public DbSet<Master> Masters { get; set; }
-        public DbSet<Order> Orders { get; set; }
+		public DbSet<Device> Devices { get; set; }
+		public DbSet<Master> Masters { get; set; }
+		public DbSet<Order> Orders { get; set; }
 
-		public async Task<Device> FirstOrDefaultDeviceAsyncWrapper(int? id)
-		{
-			return await Devices.FirstOrDefaultAsync(d => d.DeviceId == id);
-		}
-
-		public async Task<int> SaveChangesAsync()
+		public async Task<int> CustomSaveChangesAsync()
         {
-			return 1;
+			return await SaveChangesAsync();
         }
 
 		protected override void OnModelCreating(ModelBuilder builder)
 		{
-			builder.Entity<Client>()
-				.HasKey(c => c.ClientId);
-
 			builder.Entity<Client>()
 				.HasMany(o => o.Orders)
 				.WithOne(c => c.Client)
@@ -44,25 +35,9 @@ namespace KudryavtsevAlexey.ServiceCenter.Data
 				.IsRequired().OnDelete(DeleteBehavior.Restrict);
 
 			builder.Entity<Device>()
-				.HasKey(d => d.DeviceId);
-
-			builder.Entity<Device>()
-				.HasOne(c => c.Client)
-				.WithMany(d => d.Devices)
-				.IsRequired().OnDelete(DeleteBehavior.Restrict);
-
-			builder.Entity<Device>()
 				.HasOne(m => m.Master)
 				.WithMany(d => d.Devices)
 				.IsRequired();
-
-			builder.Entity<Device>()
-				.HasOne(o => o.Order)
-				.WithOne(d => d.Device)
-				.IsRequired();
-
-			builder.Entity<Master>()
-				.HasKey(m => m.MasterId);
 
 			builder.Entity<Master>()
 				.HasMany(o => o.Orders)
@@ -72,21 +47,6 @@ namespace KudryavtsevAlexey.ServiceCenter.Data
 				.HasMany(d => d.Devices)
 				.WithOne(m => m.Master)
 				.OnDelete(DeleteBehavior.Restrict);
-
-			builder.Entity<Order>()
-				.HasKey(o => o.OrderId);
-
-			builder.Entity<Order>()
-				.HasOne(c => c.Client)
-				.WithMany(o => o.Orders);
-
-			builder.Entity<Order>()
-				.HasOne(d=>d.Device)
-				.WithOne(o=>o.Order);
-
-			builder.Entity<Order>()
-				.HasOne(m=>m.Master)
-				.WithMany(o => o.Orders);
 
 			builder.Entity<Order>()
 				.Property(o => o.AmountToPay)

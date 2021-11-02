@@ -10,10 +10,10 @@ namespace KudryavtsevAlexey.ServiceCenter.Controllers
 	[Authorize(Policy ="Master")]
 	public class PanelController : Controller
 	{
-		private readonly ApplicationContext _db;
+		private readonly IContext _db;
 		private readonly IMapper _mapper;
 
-		public PanelController(ApplicationContext db, IMapper mapper)
+		public PanelController(IContext db, IMapper mapper)
 		{
 			_db = db;
 			_mapper = mapper;

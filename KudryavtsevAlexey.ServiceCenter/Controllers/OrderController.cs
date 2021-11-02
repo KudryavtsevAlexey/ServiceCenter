@@ -47,7 +47,7 @@ namespace KudryavtsevAlexey.ServiceCenter.Controllers
 				await _db.Devices.AddAsync(order.Device);
 				await _db.Orders.AddAsync(order);
 
-				await _db.SaveChangesAsync();
+				await _db.CustomSaveChangesAsync();
 
 				return RedirectToAction("ManageOrder", "Panel");
 			}
@@ -59,7 +59,7 @@ namespace KudryavtsevAlexey.ServiceCenter.Controllers
 		{
 			if (id != null)
 			{
-				var device = await _db.FirstOrDefaultDeviceAsyncWrapper(id);
+				var device = await _db.Devices.FirstOrDefaultAsync(d=>d.Order.OrderId == id);
 
 				if (device != null)
 				{
@@ -76,9 +76,9 @@ namespace KudryavtsevAlexey.ServiceCenter.Controllers
 			if (id != null)
 			{
 				var order = await _db.Orders
-				.Include(o => o.Client)
-				.Include(o => o.Device)
-				.Include(o => o.Master)
+				.Include(c=>c.Client)
+				.Include(d=>d.Device)
+				.Include(m=>m.Master)
 				.FirstOrDefaultAsync(o => o.OrderId == id);
 
 				if (order != null)
@@ -128,7 +128,7 @@ namespace KudryavtsevAlexey.ServiceCenter.Controllers
 				var order = await _db.Orders.FindAsync(id);
 
 				_db.Orders.Remove(order);
-				await ((ApplicationContext)_db).SaveChangesAsync();
+				await _db.CustomSaveChangesAsync();
 
 				return RedirectToAction("ManageOrder", "Panel");
 			}

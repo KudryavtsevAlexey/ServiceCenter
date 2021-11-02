@@ -4,12 +4,11 @@ using KudryavtsevAlexey.ServiceCenter.Data;
 using KudryavtsevAlexey.ServiceCenter.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using ServiceCenter.Tests.Helpers;
 using ServiceCenter.Tests.Helpers.AccountHeplers;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace ServiceCenter.Tests.ControllersTests
+namespace ServiceCenter.Tests.ControllersTestsInMemory
 {
 	public class AccountTests
 	{
@@ -51,7 +50,8 @@ namespace ServiceCenter.Tests.ControllersTests
 		public async Task LoginPost_ShouldReturnModelBackToView_WhenUserNotFound()
 		{
 			// arrange
-			var loginViewModel = new LoginViewModel() {
+			var loginViewModel = new LoginViewModel()
+			{
 				Email = "ExpectedEmail@test.com",
 			};
 
@@ -77,7 +77,7 @@ namespace ServiceCenter.Tests.ControllersTests
 			// arrange
 			var user = UserManagerHelper.GetApplicationUser();
 
-			var loginViewModel = new LoginViewModel() 
+			var loginViewModel = new LoginViewModel()
 			{
 				Email = "ExpectedEmail@test.com",
 				Password = "ExpectedPassword123"
@@ -86,9 +86,9 @@ namespace ServiceCenter.Tests.ControllersTests
 			_userManager.Setup(m => m.FindByEmailAsync(loginViewModel.Email))
 				.ReturnsAsync(user);
 
-			 _signInManager.Setup(m => m.PasswordSignInAsync(
-				user, loginViewModel.Password, It.IsAny<bool>(), It.IsAny<bool>()))
-				.ReturnsAsync(new FakeSignInResult(false));
+			_signInManager.Setup(m => m.PasswordSignInAsync(
+			   user, loginViewModel.Password, It.IsAny<bool>(), It.IsAny<bool>()))
+			   .ReturnsAsync(new FakeSignInResult(false));
 
 			var controller = new AccountController(_userManager.Object, _signInManager.Object);
 
@@ -166,7 +166,7 @@ namespace ServiceCenter.Tests.ControllersTests
 		public async Task RegisterPost_ShouldReturnModelBackToView_WhenIdentityResultFailed()
 		{
 			// arrange
-			var registerViewModel = RegisterHelper.GetRegisterViewModel();;
+			var registerViewModel = RegisterHelper.GetRegisterViewModel(); ;
 
 			_userManager.Setup(m => m.CreateAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>()))
 				.ReturnsAsync(new FakeIdentityResult(false));
