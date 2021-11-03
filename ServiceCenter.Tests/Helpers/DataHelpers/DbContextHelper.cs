@@ -9,7 +9,7 @@ namespace ServiceCenter.Tests.Helpers.DataHelpers
 {
 	public class DbContextHelper
 	{
-		public ApplicationContext Context { get; set; }
+		public ApplicationContext Context { get; set;}
 
 		public DbContextHelper()
 		{
