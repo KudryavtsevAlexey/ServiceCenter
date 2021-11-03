@@ -139,7 +139,7 @@ namespace ServiceCenter.Tests.ControllersTestsInMemory
 		{
 			// arrange
 
-			int? id = 2;
+			int? id = 1;
 
 			var device = await context.Devices.FirstOrDefaultAsync(d => d.Order.OrderId == id);
 
