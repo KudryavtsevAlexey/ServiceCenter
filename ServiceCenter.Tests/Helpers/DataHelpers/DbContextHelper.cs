@@ -1,22 +1,14 @@
-﻿using System.Collections.Generic;
-
-using KudryavtsevAlexey.ServiceCenter.Data;
-using KudryavtsevAlexey.ServiceCenter.Models;
+﻿using KudryavtsevAlexey.ServiceCenter.Data;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
-using ServiceCenter.Tests.Helpers.DataHelpers;
+using ServiceCenter.Tests.Helpers.OrderHelpers;
 
 namespace ServiceCenter.Tests.Helpers.DataHelpers
 {
 	public class DbContextHelper
 	{
-		private static List<Client> clientsCopy = DataHelper.GetManyClients();
-		private static List<Device> devicesCopy = DataHelper.GetManyDevices();
-		private static List<Master> mastersCopy = DataHelper.GetManyMasters();
-		private static List<Order> ordersCopy = DataHelper.GetManyOrders();
-
 		public ApplicationContext Context { get; set; }
 
 		public DbContextHelper()
@@ -28,21 +20,18 @@ namespace ServiceCenter.Tests.Helpers.DataHelpers
 
 			Context = new ApplicationContext(options);
 
-			var clients = DataHelper.GetManyClients();
-			var devices = DataHelper.GetManyDevices();
-			var masters = DataHelper.GetManyMasters();
-			var orders = DataHelper.GetManyOrders();
+			var clients = ClientHelper.GetManyClients();
+			var devices = DeviceHelper.GetManyDevices();
+			var masters = MasterHelper.GetManyMasters();
+			var orders = OrderHelper.GetManyOrders();
 
-			//clients[0].Devices.AddRange(devices);
-			//clients[0].Orders.AddRange(orders);
-
-			//masters[0].Devices.AddRange(devices);
-			//masters[0].Orders.AddRange(orders);
-
-			//TODO: Разобраться с инстансами
+			Context.Clients.Add(ClientHelper.GetClient());
 			Context.Clients.AddRange(clients);
+			Context.Devices.Add(DeviceHelper.GetDevice());
 			Context.Devices.AddRange(devices);
+			Context.Masters.Add(MasterHelper.GetMaster());
 			Context.Masters.AddRange(masters);
+			Context.Orders.Add(OrderHelper.GetOrder());
 			Context.Orders.AddRange(orders);
 
 			Context.SaveChanges();

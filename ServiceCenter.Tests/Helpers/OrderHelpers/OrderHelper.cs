@@ -1,36 +1,138 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
 using KudryavtsevAlexey.ServiceCenter.Models;
 using KudryavtsevAlexey.ServiceCenter.ViewModels;
 using Moq;
-
-using ServiceCenter.Tests.Helpers.DataHelpers;
 
 namespace ServiceCenter.Tests.Helpers.OrderHelpers
 {
     public class OrderHelper
     {
-        private static List<Client> clientsCopy = DataHelper.GetManyClients();
-        private static List<Device> devicesCopy = DataHelper.GetManyDevices();
-        private static List<Master> mastersCopy = DataHelper.GetManyMasters();
+        public static Order GetOrder()
+		{
+            return new Order()
+            {
+                OrderId = 1,
+                ClientId = 1,
+                DeviceId = 1,
+                MasterId = 1,
+                AmountToPay = 0,
+                Status = KudryavtsevAlexey.ServiceCenter.Enums.Status.Accepted,
+            };
+		}
 
         public static OrderViewModel GetOrderViewModel()
 		{
-            var client = ClientHelper.GetClientViewModel();
-            var device = DeviceHelper.GetDeviceViewModel();
-            var master = MasterHelper.GetMasterViewModel();
-
-            var order = new OrderViewModel()
+            return new OrderViewModel()
             {
                 OrderId = 1,
-                Status = It.IsAny<KudryavtsevAlexey.ServiceCenter.Enums.Status>(),
-                Client = client,
-                Device = device,
-                Master = master,
+                AmountToPay = 0,
+                Status = KudryavtsevAlexey.ServiceCenter.Enums.Status.Accepted,
+                Client = ClientHelper.GetClientViewModel(),
+                Device = DeviceHelper.GetDeviceViewModel(),
+                Master = MasterHelper.GetMasterViewModel(),
             };
+		}
 
-            order.AmountToPay = order.Device.OnGuarantee ? 0 : It.IsAny<int>();
+        public static List<Order> GetManyOrders()
+		{
+            return new List<Order>()
+            {
+                new Order() 
+                {
+                    OrderId = 2,
+                    ClientId = 2,
+                    DeviceId = 2,
+                    MasterId = 2,
+                    AmountToPay = 0,
+                    Status = KudryavtsevAlexey.ServiceCenter.Enums.Status.AwaitingPayment,
+                },
 
-            return order;
+                new Order()
+                {
+                    OrderId = 3,
+                    ClientId = 3,
+                    DeviceId = 3,
+                    MasterId = 3,
+                    AmountToPay = 3333,
+                    Status = KudryavtsevAlexey.ServiceCenter.Enums.Status.Issued,
+                },
+
+                new Order()
+                {
+                    OrderId = 4,
+                    ClientId = 4,
+                    DeviceId = 4,
+                    MasterId = 4,
+                    AmountToPay = 4444,
+                    Status = KudryavtsevAlexey.ServiceCenter.Enums.Status.PaidUp,
+                },
+
+                new Order()
+                {
+                    OrderId = 5,
+                    ClientId = 5,
+                    DeviceId = 5,
+                    MasterId = 5,
+                    AmountToPay = 5555,
+                    Status = KudryavtsevAlexey.ServiceCenter.Enums.Status.ReadyToIssue,
+                },
+
+                new Order()
+                {
+                    OrderId = 6,
+                    ClientId = 6,
+                    DeviceId = 6,
+                    MasterId = 6,
+                    AmountToPay = 0,
+                    Status = KudryavtsevAlexey.ServiceCenter.Enums.Status.UnderRepair,
+                },
+            };
+		}
+
+        public static List<OrderViewModel> GetManyOrderViewModels()
+		{
+            return new List<OrderViewModel>()
+            {
+                new OrderViewModel()
+				{
+                    OrderId = 2,
+                    AmountToPay = 0,
+                    Status = KudryavtsevAlexey.ServiceCenter.Enums.Status.AwaitingPayment,
+                },
+
+                new OrderViewModel()
+                {
+                    OrderId = 3,
+                    AmountToPay = 3333,
+                    Status = KudryavtsevAlexey.ServiceCenter.Enums.Status.Issued,
+                },
+
+                new OrderViewModel()
+                {
+                    OrderId = 4,
+                    AmountToPay = 4444,
+                    Status = KudryavtsevAlexey.ServiceCenter.Enums.Status.PaidUp,
+                },
+
+                new OrderViewModel()
+                {
+                    OrderId = 5,
+                    AmountToPay = 5555,
+                    Status = KudryavtsevAlexey.ServiceCenter.Enums.Status.ReadyToIssue,
+                },
+
+                new OrderViewModel()
+                {
+                    OrderId = 6,
+                    AmountToPay = 0,
+                    Status = KudryavtsevAlexey.ServiceCenter.Enums.Status.UnderRepair,
+                },
+            };
 		}
 
         public static Client MapClient(ClientViewModel clientViewModel)

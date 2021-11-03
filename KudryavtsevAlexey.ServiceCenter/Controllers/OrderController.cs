@@ -64,6 +64,7 @@ namespace KudryavtsevAlexey.ServiceCenter.Controllers
 				if (device != null)
 				{
 					var deviceViewModel = _mapper.Map<DeviceViewModel>(device);
+
 					return View(deviceViewModel);
 				}
 			}

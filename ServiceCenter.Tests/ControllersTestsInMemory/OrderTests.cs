@@ -1,16 +1,13 @@
 ﻿using AutoMapper;
-
 using KudryavtsevAlexey.ServiceCenter.Controllers;
 using KudryavtsevAlexey.ServiceCenter.Data;
 using KudryavtsevAlexey.ServiceCenter.Models;
 using KudryavtsevAlexey.ServiceCenter.Services;
 using KudryavtsevAlexey.ServiceCenter.ViewModels;
-
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 using Moq;
-
 using ServiceCenter.Tests.Helpers.DataHelpers;
 using ServiceCenter.Tests.Helpers.OrderHelpers;
 
@@ -21,21 +18,20 @@ namespace ServiceCenter.Tests.ControllersTestsInMemory
 {
     public class OrderTests
     {
-        private OrderController _controller;
-        private readonly ApplicationContext _context;
+		private static ApplicationContext context = new DbContextHelper().Context;
+		private OrderController _controller;
+        private readonly Mock<IContext> _context;
         private readonly Mock<IMapper> _mapper;
         private readonly Mock<IMasterService> _masterService;
         private readonly Mock<IOrderService> _orderService;
-		private DbContextHelper ContextHelper { get; set; }
 
         public OrderTests()
         {
-			ContextHelper = new DbContextHelper();
-            _context = ContextHelper.Context;
+            _context = new Mock<IContext>();
             _mapper = new Mock<IMapper>();
             _masterService = new Mock<IMasterService>();
             _orderService = new Mock<IOrderService>();
-            _controller = new OrderController(_context, _mapper.Object,
+            _controller = new OrderController(_context.Object, _mapper.Object,
                 _masterService.Object, _orderService.Object);
         }
 
@@ -75,6 +71,10 @@ namespace ServiceCenter.Tests.ControllersTestsInMemory
 			master.Devices.Add(device);
 
 			var order = OrderHelper.MapOrder(client, device, master);
+
+			_context.Setup(c => c.Clients.AddAsync(order.Client, It.IsAny<System.Threading.CancellationToken>()));
+			_context.Setup(c => c.Devices.AddAsync(order.Device, It.IsAny<System.Threading.CancellationToken>()));
+			_context.Setup(c => c.Orders.AddAsync(order, It.IsAny<System.Threading.CancellationToken>()));
 
 			_mapper.Setup(m => m.Map<Client>(orderViewModel.Client))
 				.Returns(client);
@@ -120,13 +120,16 @@ namespace ServiceCenter.Tests.ControllersTestsInMemory
 		{
 			//arrange
 
-			int? id = 0;
+			int? id = -1;
 
+			var device = await context.Devices.FirstOrDefaultAsync(d => d.Order.OrderId == id);
+
+			_controller = new OrderController(context, _mapper.Object, _masterService.Object, _orderService.Object);
 			//act
 			var result = await _controller.MoreDetails(id);
 
 			//assert
-
+			Assert.Null(device);
 			Assert.IsType<NotFoundResult>(result);
 		}
 
@@ -135,15 +138,30 @@ namespace ServiceCenter.Tests.ControllersTestsInMemory
 		public async Task MoreDetails_ShouldReturnView_WhenDeviceFound()
 		{
 			// arrange
-			int? id = 1;
-			var device = DataHelper.GetDevice();
-			var deviceViewModel = DeviceHelper.GetDeviceViewModel();
-			_mapper.Setup(m => m.Map<DeviceViewModel>(It.IsAny<Device>())).Returns(It.IsAny<DeviceViewModel>());
+
+			int? id = 2;
+
+			var device = await context.Devices.FirstOrDefaultAsync(d => d.Order.OrderId == id);
+
+			var deviceViewModel = new DeviceViewModel()
+			{
+				DeviceId = device.DeviceId,
+				Name = device.Name,
+				ProblemDescription = device.ProblemDescription,
+				OnGuarantee = device.OnGuarantee,
+				Type = device.Type,
+			};
+
+			_mapper.Setup(m => m.Map<DeviceViewModel>(device))
+				.Returns(deviceViewModel);
+
+			_controller = new OrderController(context, _mapper.Object, _masterService.Object, _orderService.Object);
 
 			// act
 			var result = await _controller.MoreDetails(id);
 
 			// assert
+			Assert.NotNull(device);
 			var viewResult = Assert.IsType<ViewResult>(result);
 			Assert.IsAssignableFrom<DeviceViewModel>(viewResult.ViewData.Model);
 		}

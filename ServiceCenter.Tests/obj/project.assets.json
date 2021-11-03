@@ -9303,6 +9303,7 @@
   "projectFileDependencyGroups": {
     "net5.0": [
       "AutoFixture >= 4.17.0",
+      "AutoMapper >= 10.1.1",
       "KudryavtsevAlexey.ServiceCenter >= 1.0.0",
       "Microsoft.AspNetCore.Identity.EntityFrameworkCore >= 5.0.10",
       "Microsoft.AspNetCore.Identity.Specification.Tests >= 5.0.11",
@@ -9366,6 +9367,10 @@
           "AutoFixture": {
             "target": "Package",
             "version": "[4.17.0, )"
+          },
+          "AutoMapper": {
+            "target": "Package",
+            "version": "[10.1.1, )"
           },
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
             "target": "Package",
