@@ -6,6 +6,6 @@ namespace KudryavtsevAlexey.ServiceCenter.Services
 {
 	public interface IMasterService
 	{
-		public Task<IEnumerable<MasterViewModel>> GetAllMasters();
+		public Task<List<MasterViewModel>> GetAllMasters();
 	}
 }

@@ -21,7 +21,7 @@ namespace KudryavtsevAlexey.ServiceCenter.Services
 
 		public IMapper Mapper { get; }
 
-		public async Task<IEnumerable<MasterViewModel>> GetAllMasters()
+		public async Task<List<MasterViewModel>> GetAllMasters()
 		{
 			var allMasters = await _db.Masters
 				.Include(m => m.Orders)
