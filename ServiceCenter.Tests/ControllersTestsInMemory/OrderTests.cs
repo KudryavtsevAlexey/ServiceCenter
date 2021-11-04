@@ -209,30 +209,11 @@ namespace ServiceCenter.Tests.ControllersTestsInMemory
 				.FirstOrDefaultAsync(o => o.OrderId == id);
 
 			//TODO: Добавить это в OrderHelper
-			var mappedClient = new ClientViewModel()
-			{
-				Email = order.Client.Email,
-				FirstName = order.Client.FirstName,
-				LastName = order.Client.LastName,
-			};
+			var mappedClient = OrderHelper.MapClientViewModel(order.Client);
 
-			var mappedDevice = new DeviceViewModel()
-			{
-				DeviceId = order.Device.DeviceId,
-				Name = order.Device.Name,
-				ProblemDescription = order.Device.ProblemDescription,
-				OnGuarantee = order.Device.OnGuarantee,
-				Type = order.Device.Type,
-			};
+			var mappedDevice = OrderHelper.MapDeviceViewModel(order.Device);
 
-			var mappedMaster = new MasterViewModel()
-			{
-				MasterId = order.Master.MasterId,
-				FirstName = order.Master.FirstName,
-				LastName = order.Master.LastName,
-				OrdersCount = order.Master.Orders.Count,
-				UniqueDescription = order.Master.UniqueDescription,
-			};
+			var mappedMaster = OrderHelper.MapMasterViewModel(order.Master);
 
 			_mapper.Setup(m => m.Map<ClientViewModel>(order.Client))
 				.Returns(mappedClient);
@@ -253,5 +234,90 @@ namespace ServiceCenter.Tests.ControllersTestsInMemory
 			var viewResult = Assert.IsType<ViewResult>(result);
 			Assert.IsAssignableFrom<OrderViewModel>(viewResult.ViewData.Model);
 		}
+
+
+		[Fact]
+		public async Task EditOrderPost_ShouldReturnModelBackToView_WhenModelStateInvalid()
+		{
+			// arrange
+			var orderViewModel = OrderHelper.GetOrderViewModel();
+			_controller.ModelState.AddModelError("Error", "Model state error");
+
+			// act
+			var result = await _controller.EditOrder(orderViewModel);
+
+			// assert
+			Assert.False(_controller.ModelState.IsValid);
+			var viewResult = Assert.IsType<ViewResult>(result);
+			Assert.IsAssignableFrom<OrderViewModel>(viewResult.ViewData.Model);
+		}
+
+
+		[Fact]
+		public async Task EditOrderPost_ShouldReturnRedirect_WhenModelStateValid()
+		{
+			// arrange
+			var orderViewModel = OrderHelper.GetOrderViewModel();
+
+			var order = OrderHelper.GetOrder();
+
+			var orderToDelete = await context.Orders.FindAsync(orderViewModel.OrderId);
+			context.Orders.Remove(orderToDelete);
+
+			order.Status = KudryavtsevAlexey.ServiceCenter.Enums.Status.Issued;
+
+			_orderService.Setup(m => m.MapOrder(orderViewModel))
+				.ReturnsAsync(order);
+
+			_controller = new OrderController(context, _mapper.Object, _masterService.Object, _orderService.Object);
+
+			// act
+			var result = await _controller.EditOrder(orderViewModel);
+
+			// assert
+			Assert.True(_controller.ModelState.IsValid);
+			var redirectResult = Assert.IsType<RedirectToActionResult>(result);
+			Assert.Equal("ManageOrder", redirectResult.ActionName);
+			Assert.Equal("Panel", redirectResult.ControllerName);
+		}
+
+
+		[Fact]
+		public async Task DeleteOrder_ShouldReturnNotFound_WhenIdIsNull()
+		{
+			// arrange
+			int? id = null;
+
+			// act
+			var result = await _controller.DeleteOrder(id);
+
+			// assert
+			Assert.IsType<NotFoundResult>(result);
+		}
+
+
+		[Fact]
+		public async Task DeleteOrder_ShouldReturnRedirect_WhenOrderFound()
+		{
+			// arrange
+			int? id = 6;
+
+			_controller = new OrderController(context, _mapper.Object, _masterService.Object, _orderService.Object);
+
+			var countBefore = context.Orders.Local.Count;
+
+			// act
+			var result = await _controller.DeleteOrder(id);
+
+			countBefore--;
+			var countAfter = context.Orders.Local.Count;
+
+			// assert
+			var redirectResult = Assert.IsType<RedirectToActionResult>(result);
+			Assert.Equal("ManageOrder", redirectResult.ActionName);
+			Assert.Equal("Panel", redirectResult.ControllerName);
+			Assert.Equal(countBefore, countAfter);
+		}
+
 	}
 }

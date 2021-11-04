@@ -202,5 +202,58 @@ namespace ServiceCenter.Tests.Helpers.OrderHelpers
 
             return order;
         }
+
+        public static ClientViewModel MapClientViewModel(Client client)
+		{
+            return new ClientViewModel()
+            {
+                Email = client.Email,
+                FirstName = client.FirstName,
+                LastName = client.LastName,
+            };
+		}
+
+        public static DeviceViewModel MapDeviceViewModel(Device device)
+		{
+            return new DeviceViewModel()
+            {
+                DeviceId = device.DeviceId,
+                Name = device.Name,
+                ProblemDescription = device.ProblemDescription,
+                OnGuarantee = device.OnGuarantee,
+                Type = device.Type,
+            };
+		}
+
+        public static MasterViewModel MapMasterViewModel(Master master)
+		{
+            return new MasterViewModel()
+            {
+                MasterId = master.MasterId,
+                FirstName = master.FirstName,
+                LastName = master.LastName,
+                OrdersCount = master.Orders.Count,
+                UniqueDescription = master.UniqueDescription,
+            };
+		}
+
+        public static OrderViewModel MapOrderViewModel(Order order)
+        {
+            var client = MapClientViewModel(order.Client);
+
+            var device = MapDeviceViewModel(order.Device);
+
+            var master = MapMasterViewModel(order.Master);
+
+            return new OrderViewModel()
+            {
+                OrderId = order.OrderId,
+                Client = client,
+                Device = device,
+                Master = master,
+                AmountToPay = order.AmountToPay,
+                Status = order.Status,
+            };
+        }
     }
 }

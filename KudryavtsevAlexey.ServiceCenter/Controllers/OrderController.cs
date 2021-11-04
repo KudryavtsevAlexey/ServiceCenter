@@ -86,6 +86,7 @@ namespace KudryavtsevAlexey.ServiceCenter.Controllers
 				{
 					var model = new OrderViewModel()
 					{
+						OrderId = order.OrderId,
 						Client = _mapper.Map<ClientViewModel>(order.Client),
 						Device = _mapper.Map<DeviceViewModel>(order.Device),
 						Master = _mapper.Map<MasterViewModel>(order.Master),
@@ -115,7 +116,10 @@ namespace KudryavtsevAlexey.ServiceCenter.Controllers
 				var orderToDelete = await _db.Orders.FindAsync(model.OrderId);
 				_db.Orders.Remove(orderToDelete);
 
-				await _orderService.MapOrder(model);
+				var order = await _orderService.MapOrder(model);
+
+				_db.Orders.Add(order);
+				await _db.CustomSaveChangesAsync();
 
 				return RedirectToAction("ManageOrder", "Panel");
 			}
