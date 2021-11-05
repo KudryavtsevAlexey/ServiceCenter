@@ -4,6 +4,7 @@
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
 C:\Users\Lenovo\source\repos\KudryavtsevAlexey.ServiceCenter\
+**/wwwroot/
 
 # User-specific files
 *.rsuser
