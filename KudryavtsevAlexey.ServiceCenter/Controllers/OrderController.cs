@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace KudryavtsevAlexey.ServiceCenter.Controllers
 {
-    [Authorize(Policy ="Master")]
+	[Authorize(Policy = "Master")]
 	public class OrderController : Controller
 	{
 		private readonly IContext _db;
@@ -59,7 +59,7 @@ namespace KudryavtsevAlexey.ServiceCenter.Controllers
 		{
 			if (id != null)
 			{
-				var device = await _db.Devices.FirstOrDefaultAsync(d=>d.Order.OrderId == id);
+				var device = await _db.Devices.FirstOrDefaultAsync(d => d.Order.OrderId == id);
 
 				if (device != null)
 				{
@@ -77,9 +77,9 @@ namespace KudryavtsevAlexey.ServiceCenter.Controllers
 			if (id != null)
 			{
 				var order = await _db.Orders
-				.Include(c=>c.Client)
-				.Include(d=>d.Device)
-				.Include(m=>m.Master)
+				.Include(c => c.Client)
+				.Include(d => d.Device)
+				.Include(m => m.Master)
 				.FirstOrDefaultAsync(o => o.OrderId == id);
 
 				if (order != null)
@@ -148,33 +148,49 @@ namespace KudryavtsevAlexey.ServiceCenter.Controllers
 		}
 
 		[HttpPost, AllowAnonymous]
-		public async Task<IActionResult> CheckOrderStatusAsync(ClientViewModel client)
+		public async Task<IActionResult> CheckOrderStatus(ClientViewModel client)
 		{
-			if (client != null)
+			if (!ModelState.IsValid)
+			{
+				return View(client);
+			}
+
+			else if (client == null)
+			{
+				return View();
+			}
+
+			else
 			{
 				var order = await _db.Orders
-				.Include(o => o.Client)
-				.Include(o => o.Device)
-				.Include(o => o.Master)
-				.FirstOrDefaultAsync(o => o.Client.Email == client.Email
-										  && o.Client.FirstName.ToLower() == client.FirstName.ToLower()
-										  && o.Client.LastName.ToLower() == client.LastName.ToLower());
+					.Include(o => o.Client)
+					.Include(o => o.Device)
+					.Include(o => o.Master)
+					.FirstOrDefaultAsync(o => o.Client.Email == client.Email
+										&& o.Client.FirstName.ToLower() == client.FirstName.ToLower()
+										&& o.Client.LastName.ToLower() == client.LastName.ToLower());
 
 				if (order != null)
 				{
-					var orderStatus = _mapper.Map<OrderViewModel>(order);
-
+					var orderStatus = new OrderViewModel()
+					{
+						OrderId = order.OrderId,
+						AmountToPay = order.AmountToPay,
+						Status = order.Status,
+					};
 					orderStatus.Client = _mapper.Map<ClientViewModel>(order.Client);
 					orderStatus.Device = _mapper.Map<DeviceViewModel>(order.Device);
 					orderStatus.Master = _mapper.Map<MasterViewModel>(order.Master);
-					orderStatus.AmountToPay = order.AmountToPay;
-					orderStatus.Status = order.Status;
 
 					return View("ShowOrderStatus", orderStatus);
 				}
-			}
 
-			return View(client);
+				else
+				{
+					ModelState.AddModelError("", "No orders found related to this user");
+					return View();
+				}
+			}
 		}
 	}
 }

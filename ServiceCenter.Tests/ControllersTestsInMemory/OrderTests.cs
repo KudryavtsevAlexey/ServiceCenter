@@ -319,5 +319,104 @@ namespace ServiceCenter.Tests.ControllersTestsInMemory
 			Assert.Equal(countBefore, countAfter);
 		}
 
+
+		[Fact]
+		public async Task CheckOrderStatusPost_ShouldReturnModelBackToView_WhenModelStateInvalid()
+		{
+			// arrange
+			var clientViewModel = new ClientViewModel();
+			_controller.ModelState.AddModelError("Error", "Model state error");
+
+			// act
+			var result = await _controller.CheckOrderStatus(clientViewModel);
+
+			// assert
+			var viewResult = Assert.IsType<ViewResult>(result);
+			Assert.IsAssignableFrom<ClientViewModel>(viewResult.ViewData.Model);
+		}
+
+		[Fact]
+		public async Task CheckOrderStatusPost_ShouldReturnView_WhenModelIsNull()
+		{
+			// arrange
+			ClientViewModel clientViewModel = null;
+
+			// act
+			var result = await _controller.CheckOrderStatus(clientViewModel);
+
+			// assert
+			var viewResult = Assert.IsType<ViewResult>(result);
+		}
+
+
+		[Fact]
+		public async Task CheckOrderStatusPost_ShouldReturnView_WhenOrderNotFound()
+		{
+			// arrange
+			_controller = new OrderController(context, _mapper.Object, _masterService.Object, _orderService.Object);
+
+			var clientViewModel = new ClientViewModel() 
+			{
+				Email = "ActualEmail!@#$%^&*()@mail.ru",
+				FirstName = "ActualFirstName!@#$%^&*()",
+				LastName = "ActualLastName!@#$%^&*()",
+			};
+
+			var order = await context.Orders
+				.Include(o => o.Client)
+				.Include(o => o.Device)
+				.Include(o => o.Master)
+				.FirstOrDefaultAsync(o => o.Client.Email == clientViewModel.Email
+										&& o.Client.FirstName.ToLower() == clientViewModel.FirstName.ToLower()
+										&& o.Client.LastName.ToLower() == clientViewModel.LastName.ToLower());
+
+			// act
+			var result = await _controller.CheckOrderStatus(clientViewModel);
+
+			// assert
+			Assert.Null(order);
+			Assert.False(_controller.ModelState.IsValid);
+			Assert.IsType<ViewResult>(result);
+		}
+
+
+		[Fact]
+		public async Task CheckOrderStatusPost_ShouldReturnView_WhenOrderFound()
+		{
+			// arrange
+			var clientViewModel = ClientHelper.GetClientViewModel();
+
+			var order = await context.Orders
+				.Include(o => o.Client)
+				.Include(o => o.Device)
+				.Include(o => o.Master)
+				.FirstOrDefaultAsync(o => o.Client.Email == clientViewModel.Email
+										&& o.Client.FirstName.ToLower() == clientViewModel.FirstName.ToLower()
+										&& o.Client.LastName.ToLower() == clientViewModel.LastName.ToLower());
+
+			var mappedClient = OrderHelper.MapClientViewModel(order.Client);
+			var mappedDevice = OrderHelper.MapDeviceViewModel(order.Device);
+			var mappedMaster = OrderHelper.MapMasterViewModel(order.Master);
+
+			_mapper.Setup(m => m.Map<ClientViewModel>(order.Client))
+				.Returns(mappedClient);
+			_mapper.Setup(m => m.Map<DeviceViewModel>(order.Device))
+				.Returns(mappedDevice);
+			_mapper.Setup(m => m.Map<MasterViewModel>(order.Master))
+				.Returns(mappedMaster);
+
+			_controller = new OrderController(context, _mapper.Object, _masterService.Object, _orderService.Object);
+				
+			// act
+			var result = await _controller.CheckOrderStatus(clientViewModel);
+
+			// assert
+			Assert.True(_controller.ModelState.IsValid);
+			Assert.NotNull(clientViewModel);
+			Assert.NotNull(order);
+			var viewResult = Assert.IsType<ViewResult>(result);
+			Assert.IsAssignableFrom<OrderViewModel>(viewResult.ViewData.Model);
+			Assert.Equal("ShowOrderStatus", viewResult.ViewName);
+		}
 	}
 }
